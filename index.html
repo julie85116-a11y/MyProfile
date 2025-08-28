@@ -51,30 +51,29 @@
     .msg{ white-space:pre-line; line-height:1.9; font-size: clamp(16px,2.4vw,20px); margin:0 auto; max-width:800px }
     .heart-outline{ position:absolute; inset:-24px; width:calc(100% + 48px); height:calc(100% + 48px); pointer-events:none; z-index:-1 }
 
-    /* 相框相簿 */
-    .gallery{ display:grid; gap:22px }
-    @media (min-width:1024px){ .gallery{ grid-template-columns: repeat(3,1fr) } }
-    @media (min-width:680px) and (max-width:1023.98px){ .gallery{ grid-template-columns: repeat(2,1fr) } }
-    @media (max-width:679.98px){ .gallery{ grid-template-columns: 1fr } }
+    /* 相簿 */
+    .gallery{ position:relative; overflow:hidden }
+    .slides{ display:flex; transition: transform .6s ease }
+    .slide{ min-width:100%; box-sizing:border-box; padding:20px }
     .frame{ position:relative; padding:14px; border-radius:14px;
             background: linear-gradient(145deg,#9b6f43 0%,#e7c796 32%,#b98a5a 55%,#8d6a3e 100%);
             box-shadow: 0 18px 28px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.2) }
     .frame::before{ content:""; position:absolute; inset:6px; border-radius:10px; background:linear-gradient(145deg,rgba(255,255,255,.35),rgba(0,0,0,.08));
                     mix-blend-mode:overlay; pointer-events:none }
     .mat{ background:#fff; padding:14px; border-radius:10px; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06) }
-    .frame img{ display:block; width:100%; height:100%; object-fit:cover; border-radius:8px; box-shadow:0 10px 18px rgba(0,0,0,.18) }
-    .cap{ text-align:center; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); margin-top:6px; font-size:14px }
-    .note{ text-align:center; font-size:12px; opacity:.7; margin-top:16px; color:#fff }
+    .frame img, .frame video{ display:block; width:100%; max-height:640px; object-fit:cover; border-radius:8px; box-shadow:0 10px 18px rgba(0,0,0,.18) }
+    .cap{ text-align:center; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); margin-top:6px; font-size:16px }
+    .controls{ text-align:center; margin-top:12px }
+    .controls button{ background:#fff; border:none; margin:0 6px; padding:6px 12px; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2) }
   </style>
 </head>
 <body>
 
-  <!-- 背景影片（檔案放在 /照片）-->
-    <video class="bg-video" autoplay muted loop playsinline poster="照片/IMG_3454.JPG">
-  <source src="照片/couple.webm" type="video/webm">
-  <source src="照片/couple_h264.mp4" type="video/mp4">
-    </video>
-
+  <!-- 背景影片 -->
+  <video class="bg-video" autoplay muted loop playsinline poster="照片/IMG_3454.JPG">
+    <source src="照片/couple.webm" type="video/webm">
+    <source src="照片/couple_h264.mp4" type="video/mp4">
+  </video>
   <div class="bg-overlay" aria-hidden="true"></div>
 
   <!-- 花瓣/愛心灑落 -->
@@ -93,35 +92,89 @@
           <p class="msg">情人節快樂，麻糬寶寶
 能成為你的女朋友的我，真的好幸運
 無論歡笑或難關，我都想跟你走到很遠、一直陪著你</p>
-
-          <svg class="heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M50 90 C38 76 10 62 10 40 C10 26 21 17 32 17 c8 0 12 4 18 12 c6-8 10-12 18-12 c11 0 22 9 22 23 c0 22-28 36-40 50z"
-                  fill="none" stroke="url(#g)" stroke-width="3"/>
-            <defs>
-              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0" stop-color="#ff8fb3"/><stop offset="1" stop-color="#e84a78"/>
-              </linearGradient>
-            </defs>
-          </svg>
         </div>
       </section>
 
       <!-- 相簿 -->
       <section class="gallery" aria-label="回憶相簿">
-        <figure class="frame">
-          <div class="mat"><img src="照片/IMG_3419.JPG" alt="麻糬視角"></div>
-          <figcaption class="cap">麻糬男友視角</figcaption>
-        </figure>
+        <div class="slides" id="slides">
 
-        <figure class="frame">
-          <div class="mat"><img src="照片/IMG_3412.JPG" alt="帥哥麻糬本人"></div>
-          <figcaption class="cap">可愛帥氣麻糬</figcaption>
-        </figure>
+          <!-- 第一張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第一張.JPG"></div></div>
+            <p class="cap">曖昧的時候都會給我看手手</p>
+          </article>
 
-        <figure class="frame">
-          <div class="mat"><img src="照片/IMG_3454.JPG" alt="為數不多正常的合照"></div>
-          <figcaption class="cap">為數不多好看合照</figcaption>
-        </figure>
+          <!-- 第二張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第二張.jpg"></div></div>
+            <p class="cap">一起追太陽看日出 (好浪漫)</p>
+          </article>
+
+          <!-- 第三張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第三張.JPG"></div></div>
+            <p class="cap">一起拍拍貼機</p>
+          </article>
+
+          <!-- 第四張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第四張.jpg"></div></div>
+            <p class="cap">520 有人送了一束玫瑰花 (浪漫儀式感的男人)</p>
+          </article>
+
+          <!-- 第五張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第五張.jpg"></div></div>
+            <p class="cap">日常約會 逛 IKEA 甜蜜單純的生活</p>
+          </article>
+
+          <!-- 第六張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第六張.JPG"></div></div>
+            <p class="cap">台南遊 偷拍寶寶</p>
+          </article>
+
+          <!-- 第七張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第七張.jpg"></div></div>
+            <p class="cap">可可愛愛的床照</p>
+          </article>
+
+          <!-- 第八張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第八張.JPG"></div></div>
+            <p class="cap">到哪都要逛枕頭的寶寶</p>
+          </article>
+
+          <!-- 第九張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第十張.jpg"></div></div>
+            <p class="cap">七夕寶寶提前準備的玫瑰花啊啊啊</p>
+          </article>
+
+          <!-- 第十張 -->
+          <article class="slide">
+            <div class="frame"><div class="mat"><img src="照片/第十張.JPG"></div></div>
+            <p class="cap">還有一盒巧克力 ❤️</p>
+          </article>
+
+          <!-- 影片 -->
+          <article class="slide">
+            <div class="frame"><div class="mat">
+              <video autoplay muted loop playsinline controls>
+                <source src="照片/couple2.webm" type="video/webm">
+                <source src="照片/couple2_h264.mp4" type="video/mp4">
+              </video>
+            </div></div>
+            <p class="cap">寶寶耍可愛日常</p>
+          </article>
+
+        </div>
+        <div class="controls">
+          <button onclick="moveSlide(-1)">上一張</button>
+          <button onclick="moveSlide(1)">下一張</button>
+        </div>
       </section>
 
       <p class="note">Made with ❤️ for 七夕</p>
@@ -129,7 +182,16 @@
   </main>
 
   <script>
-    // 產生灑落（櫻花＋愛心）
+    // 相簿控制
+    let current = 0;
+    const slides = document.getElementById('slides');
+    const total = slides.children.length;
+    function moveSlide(dir){
+      current = (current + dir + total) % total;
+      slides.style.transform = 'translateX(-'+(current*100)+'%)';
+    }
+
+    // 花瓣灑落
     const layer = document.querySelector('.petals');
     function drop(type, count){
       for(let i=0;i<count;i++){
