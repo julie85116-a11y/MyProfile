@@ -67,13 +67,31 @@
 </head>
 <body>
 
-<!-- 背景影片（因為有 <base>，這裡的 src/ poster 會自動指向「照片/」） -->
-<video class="bg-video" autoplay muted loop playsinline poster="cover.jpg">
-  <source src="couple.mp4" type="video/mp4">
+<!-- 在 <head> 裡加入背景影片的 CSS -->
+<style>
+  .bg-video{
+    position: fixed; /* 或 absolute；若用 absolute 記得把 body 設 relative */
+    top:0; left:0; width:100vw; height:100vh;
+    object-fit: cover;             /* 填滿不變形 */
+    z-index: -1;                   /* 放到內容後面 */
+  }
+  .bg-overlay{
+    position: fixed; inset:0;      /* 可選：加一層半透明遮罩讓字更清楚 */
+    background: rgba(0,0,0,.25);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- 背景影片（注意路徑在「照片」資料夾）-->
+<video class="bg-video" autoplay muted loop playsinline preload="auto"
+       poster="照片/IMG_3454.JPG">
+  <source src="照片/couple.mp4" type="video/mp4">
   您的瀏覽器不支援影片播放。
 </video>
-
 <div class="bg-overlay" aria-hidden="true"></div>
+
 
 <!-- 花瓣/愛心灑落 -->
 <div class="petals" aria-hidden="true"></div>
