@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 全站手寫字體：中文為 Ma Shan Zheng，英數備援 Patrick Hand -->
+  <!-- 全站手寫字體 -->
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Patrick+Hand&display=swap" rel="stylesheet">
 
   <style>
@@ -13,21 +13,15 @@
       --paper: rgba(255,255,255,.88);
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
-
-      /* 全站統一手寫字體 */
       --hand: "Ma Shan Zheng","Patrick Hand","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 
       /* 相冊配色 */
-      --album-bg: #3b2f2a;
-      --album-ink: #f7f2ea;
-      --tape-a: #e8d49b;
-      --tape-b: #d7bf87;
+      --album-bg: #3b2f2a; --album-ink: #f7f2ea;
+      --tape-a: #e8d49b; --tape-b: #d7bf87;
 
       /* 信封配色 */
-      --env-stroke: #111;
-      --env-pink: #ffd6ea;
-      --env-paper: #fff7df;
-      --env-heart: #ff6b7d;
+      --env-stroke: #111; --env-pink: #ffd6ea;
+      --env-paper: #fff7df; --env-heart: #ff6b7d;
     }
 
     *{ box-sizing:border-box }
@@ -59,49 +53,43 @@
     .wrap{ position:relative; z-index:2; padding: 8vh 18px 18vh }
     .container{ max-width:1100px; margin:0 auto }
 
-    /* ---------- 首屏卡片：信封樣式 ---------- */
+    /* ---------- 首屏卡片：信封樣式（紙張在最上層） ---------- */
     .hero{ margin: 2vh auto 4vh; max-width: 960px }
     .envelope{
       position:relative; margin: 8px auto 14px; width: min(860px, 95vw);
       aspect-ratio: 4/3;
     }
-    /* 信紙（顯示你的整段內文） */
+    /* 信紙（z-index 3，最上層） */
     .envelope .paper{
       position:absolute; top:-6%; left:11%; width:78%; height:66%;
       background: var(--env-paper); border:6px solid var(--env-stroke);
       box-shadow: 0 16px 22px rgba(0,0,0,.25);
-      transform: rotate(-7deg);
+      transform: rotate(-7deg); z-index:3;
       padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
       overflow: auto; border-radius: 6px;
     }
-    .envelope .paper h1{
-      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
-    }
-    .envelope .paper p{
-      margin:0; white-space:pre-line; line-height:1.9; font-size: clamp(15px,2.6vw,20px);
-    }
+    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400 }
+    .envelope .paper p{ margin:0; white-space:pre-line; line-height:1.9; font-size: clamp(15px,2.6vw,20px) }
 
-    /* 信封主體（底座 + 對角摺線） */
+    /* 信封本體（z-index 1，紙張後面；不攔滑鼠事件） */
     .env-body{
       position:absolute; left:6%; right:6%; bottom:4%; height:58%;
       background: var(--env-pink); border:6px solid var(--env-stroke);
       border-bottom-left-radius:8px; border-bottom-right-radius:8px;
       box-shadow: 0 12px 24px rgba(0,0,0,.25);
+      z-index:1; pointer-events:none;
     }
     .env-body::before{
-      /* 兩條對角線 */
-      content:""; position:absolute; inset:0;
+      content:""; position:absolute; inset:0; z-index:1;
       background:
         linear-gradient(137deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%),
         linear-gradient(223deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%);
-      pointer-events:none;
-      opacity:.9;
+      opacity:.9; pointer-events:none;
     }
-
-    /* 上蓋三角形（用 clip-path 畫） */
+    /* 上蓋三角形（也放後面） */
     .env-flap{
       position:absolute; left:6%; right:6%; bottom: calc(4% + 58% - 6px); height:36%;
-      overflow:visible;
+      overflow:visible; z-index:1; pointer-events:none;
     }
     .env-flap::before{
       content:""; position:absolute; inset:0;
@@ -112,15 +100,14 @@
       border-right:6px solid var(--env-stroke);
       border-left:6px solid var(--env-stroke);
     }
-
-    /* 信封上的三顆愛心 */
+    /* 愛心也放後面 */
     .heart{
       position:absolute; background:var(--env-heart);
       width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
       transform: rotate(45deg);
       box-shadow: 0 6px 10px rgba(0,0,0,.18);
-      z-index:3; border:6px solid var(--env-stroke);
-      border-radius: 8px;
+      z-index:1; border:6px solid var(--env-stroke);
+      border-radius: 8px; pointer-events:none;
     }
     .heart::before, .heart::after{
       content:""; position:absolute; width:100%; height:100%;
@@ -128,7 +115,6 @@
     }
     .heart::before{ left:-50%; top:0 }
     .heart::after{ top:-50%; left:0 }
-
     .h-big{ left: calc(50% - clamp(32px, 6vw, 52px)); bottom: calc(4% + 58% - clamp(22px, 3vw, 28px)); width:clamp(70px,10vw,92px); height:clamp(70px,10vw,92px) }
     .h-mid{ left: 16%; bottom: calc(4% + 58% - 12px); transform: rotate(45deg) scale(.8) }
     .h-small{ left: 10%; bottom: calc(4% + 58% + 26px); transform: rotate(45deg) scale(.6) }
@@ -147,36 +133,24 @@
     .slide{ position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
             transition:opacity .5s ease, transform .5s ease; display:block; }
     .slide.active{ opacity:1; transform:translateX(0) scale(1) }
-
-    .page{
-      background:transparent; box-shadow:none; height:100%;
-      display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center;
-    }
-
+    .page{ background:transparent; box-shadow:none; height:100%;
+           display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center; }
     .frame{ position:relative }
-    .mat{
-      position:relative; background:#fff; padding:14px 14px 42px; border-radius:8px;
-      box-shadow: 0 18px 36px rgba(0,0,0,.35);
-      transform: rotate(-1.2deg);
-    }
+    .mat{ position:relative; background:#fff; padding:14px 14px 42px; border-radius:8px;
+          box-shadow: 0 18px 36px rgba(0,0,0,.35); transform: rotate(-1.2deg) }
     .slide:nth-child(even) .mat{ transform: rotate(.9deg) }
     .mat::before, .mat span.tape{
-      content:""; position:absolute; width:110px; height:28px; background:
-        linear-gradient(180deg,var(--tape-a),var(--tape-b));
+      content:""; position:absolute; width:110px; height:28px; background:linear-gradient(180deg,var(--tape-a),var(--tape-b));
       opacity:.9; mix-blend-mode:multiply; box-shadow:0 4px 10px rgba(0,0,0,.18);
-      clip-path: polygon(3% 0, 97% 0, 100% 20%, 97% 100%, 3% 100%, 0 80%);
-      pointer-events:none;
+      clip-path: polygon(3% 0, 97% 0, 100% 20%, 97% 100%, 3% 100%, 0 80%); pointer-events:none;
     }
     .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
     .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
-
     .media{ width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
             box-shadow:0 10px 18px rgba(0,0,0,.18); display:block }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
-
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
     .text h3{ margin:0; font-size:22px; letter-spacing:.5px; font-weight:400 }
-
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
     .arrow svg{ width:40px; height:40px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
@@ -210,10 +184,10 @@
   <main class="wrap">
     <div class="container">
 
-      <!-- 首屏卡片：信封樣式 -->
+      <!-- 首屏卡片：信封在後、信紙在前 -->
       <section class="hero" aria-label="情人節信封卡片">
         <div class="envelope">
-          <!-- 顯示你的整段內文的「信紙」 -->
+          <!-- 信紙（前景、可滾動/選取） -->
           <div class="paper">
             <h1>七夕情人節</h1>
             <p>情人節快樂，麻糬寶寶
@@ -226,11 +200,9 @@
 我真的超級世界無敵霹靂愛你 &#x2764;&#xFE0F; &#x1F496;</p>
           </div>
 
-          <!-- 信封主體與上蓋（純裝飾用） -->
+          <!-- 信封（後景、僅裝飾） -->
           <div class="env-body" aria-hidden="true"></div>
           <div class="env-flap" aria-hidden="true"></div>
-
-          <!-- 三顆愛心 -->
           <span class="heart h-small" aria-hidden="true"></span>
           <span class="heart h-mid" aria-hidden="true"></span>
           <span class="heart h-big" aria-hidden="true"></span>
@@ -369,7 +341,7 @@
   </main>
 
   <script>
-    /* 花瓣生成 */
+    // 花瓣
     const layer = document.querySelector('.petals');
     function drop(type, count){
       for(let i=0;i<count;i++){
@@ -388,7 +360,7 @@
     }
     drop('sakura', 46); drop('heart', 26);
 
-    /* 相簿：箭頭 / 鍵盤 / 觸控 */
+    // 相簿：箭頭 / 鍵盤 / 觸控
     const slides = Array.from(document.querySelectorAll('.slide'));
     let i = 0;
     function go(n){
@@ -408,7 +380,7 @@
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
 
-    /* 圖片副檔名大小寫容錯：若 .jpg 失敗自動改 .JPG 再試一次 */
+    // 圖片大小寫容錯
     document.querySelectorAll('img.media').forEach(img => {
       const orig = img.getAttribute('src');
       const m = orig.match(/\.(jpg|jpeg)$/i);
@@ -423,6 +395,7 @@
   </script>
 </body>
 </html>
+
 
 
 
