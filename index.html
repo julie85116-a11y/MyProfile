@@ -5,17 +5,24 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 只載入 Ma Shan Zheng（手寫） -->
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
-
   <style>
+    /* 直接宣告 Ma Shan Zheng（固定單一字重），避免載入其它中文字體造成混雜 */
+    @font-face{
+      font-family: "HandUnified";
+      font-style: normal;
+      font-weight: 400;
+      font-display: block; /* 字體載入前先不顯示，避免 FOUT 造成粗細不一致 */
+      src: url("https://fonts.gstatic.com/s/mashanzheng/v16/NaPecZTIAOhVxoMyOr9n_E7fdMPmBA.woff2") format("woff2");
+      unicode-range: U+0-7F, U+2E80-2EFF, U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE10-FE6F, U+FF00-FFEF;
+    }
+
     :root{
       --paper: rgba(255,255,255,.88);
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
 
-      /* 統一字體與字級 */
-      --hand: "Ma Shan Zheng"; /* 僅此一款，避免混用造成粗細不一 */
+      /* 統一字體 / 字級 / 行高 */
+      --hand: "HandUnified";
       --fz-body: clamp(18px, 2.6vw, 20px);
 
       /* 相簿配色 */
@@ -30,14 +37,13 @@
     *{ box-sizing:border-box }
     html,body{ height:100% }
 
-    /* === 全站字體一致：只用 Ma Shan Zheng，Emoji 另走彩色字體 === */
+    /* ====== 全站字體「鎖死」：只用 HandUnified，Emoji 走彩色字體 ====== */
     html, body,
     .title, .msg, .text, .cap, .arrow,
     .paper, .album, .slides {
-      font-family: var(--hand), "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif !important;
+      font-family: var(--hand), "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji" !important;
       font-weight: 400 !important;
       font-style: normal !important;
-      /* 禁止瀏覽器「合成粗體/斜體」以免出現粗細不一 */
       font-synthesis: none;
       font-synthesis-weight: none;
       font-synthesis-style: none;
@@ -46,10 +52,21 @@
       text-rendering: optimizeLegibility;
       letter-spacing: .02em;
     }
+    /* 停用連字等可能造成個別字外觀差異的特性 */
+    .paper, .text, .title, .msg {
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "clig" 0;
+      line-height: 1.95;
+    }
+
+    /* 在字體尚未 ready 前，先隱藏整頁，避免 FOUT 混字重 */
+    html:not(.hand-ready) body{ visibility:hidden }
 
     body{
       margin:0; color:#2b2b2b; overflow-x:hidden;
       background:#000; /* 視訊未載入前底色 */
+      -webkit-text-size-adjust: 100%;
     }
 
     /* 背景影片（行動裝置移除模糊以加速） */
@@ -94,13 +111,13 @@
     }
     .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); }
     .envelope .paper p{
-      margin:0; white-space:pre-line; line-height:1.95; font-size: var(--fz-body);
+      margin:0; white-space:pre-line; font-size: var(--fz-body);
     }
     .paper .hint{
       position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none;
     }
 
-    /* 信封（在後面，且移除黑色 X） */
+    /* 信封（在後面，且移除黑色 X ） */
     .env-body{
       position:absolute; left:6%; right:6%; bottom:4%; height:58%;
       background: var(--env-pink); border:6px solid var(--env-stroke);
@@ -367,6 +384,9 @@
   </main>
 
   <script>
+    // 等字體真正 ready 再顯示，避免載入瞬間用系統字體造成粗細不一
+    document.fonts.ready.then(() => document.documentElement.classList.add('hand-ready'));
+
     // 花瓣數量：桌機多、手機少（效能優化）
     const isMobile = matchMedia('(max-width: 760px)').matches;
     const sak = isMobile ? 22 : 46;
@@ -426,6 +446,7 @@
   </script>
 </body>
 </html>
+
 
 
 
