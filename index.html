@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 全站手寫字體（Google Fonts） -->
+  <!-- 只載入 Ma Shan Zheng（手寫） -->
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 
   <style>
@@ -14,11 +14,11 @@
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
 
-      /* 字體與統一字級 */
-      --hand: "Ma Shan Zheng","Noto Serif TC","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      --fz-body: clamp(18px, 2.6vw, 20px);   /* 內文（信紙＋相簿右側）統一字級 */
+      /* 統一字體與字級 */
+      --hand: "Ma Shan Zheng"; /* 僅此一款，避免混用造成粗細不一 */
+      --fz-body: clamp(18px, 2.6vw, 20px);
 
-      /* 相冊配色 */
+      /* 相簿配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
       --tape-a: #e8d49b; --tape-b: #d7bf87;
 
@@ -29,19 +29,32 @@
 
     *{ box-sizing:border-box }
     html,body{ height:100% }
+
+    /* === 全站字體一致：只用 Ma Shan Zheng，Emoji 另走彩色字體 === */
+    html, body,
+    .title, .msg, .text, .cap, .arrow,
+    .paper, .album, .slides {
+      font-family: var(--hand), "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif !important;
+      font-weight: 400 !important;
+      font-style: normal !important;
+      /* 禁止瀏覽器「合成粗體/斜體」以免出現粗細不一 */
+      font-synthesis: none;
+      font-synthesis-weight: none;
+      font-synthesis-style: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      letter-spacing: .02em;
+    }
+
     body{
       margin:0; color:#2b2b2b; overflow-x:hidden;
-      font-family:var(--hand);
-      -webkit-font-smoothing:antialiased; font-smooth:always;
-      letter-spacing:.3px;
-      background:#000; /* 視訊未載入前的底色 */
+      background:#000; /* 視訊未載入前底色 */
     }
 
     /* 背景影片（行動裝置移除模糊以加速） */
     .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.6) saturate(1.05) }
-    @media (max-width:760px){
-      .bg-video{ filter:brightness(.6) } /* 去除 blur 以免卡頓 */
-    }
+    @media (max-width:760px){ .bg-video{ filter:brightness(.6) } }
     .bg-overlay{ position:fixed; inset:0; z-index:0; pointer-events:none;
       background:
         radial-gradient(60% 60% at 50% 20%, rgba(255,182,206,.22) 0%, transparent 60%),
@@ -51,7 +64,7 @@
     .petals{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden }
     .petal{ position:absolute; top:-12vh; opacity:.9; width:26px; height:30px; background-size:100% 100%; background-repeat:no-repeat;
             animation: fall var(--fall,14s) linear infinite, sway var(--sway,4s) ease-in-out infinite alternate;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)) ; will-change: transform, top; }
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)); will-change: transform, top; }
     .petal.sakura{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='p' cx='50%' cy='35%'><stop offset='0' stop-color='%23ffe2f0'/><stop offset='1' stop-color='%23ff80ab'/></radialGradient></defs><path d='M20 1 C33 10 33 30 20 39 C7 30 7 10 20 1 Z' fill='url(%23p)'/><path d='M20 18 C22 21 22 24 20 28 C18 24 18 21 20 18 Z' fill='%23fff' opacity='.28'/></svg>") }
     .petal.heart{  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path d='M20 35 C14 29 4 23 4 14 C4 8 8 5 12 5 c4 0 6 2 8 5 c2-3 4-5 8-5 c4 0 8 3 8 9 c0 9-10 15-16 21z' fill='%23e84a78'/></svg>") }
     @keyframes fall{ to{ top:110vh } }
@@ -76,22 +89,18 @@
       transform: rotate(-7deg); z-index:3;
       padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
       overflow: auto; border-radius: 6px;
-      -webkit-overflow-scrolling: touch;  /* 行動裝置順滑滾動 */
-      backface-visibility: hidden;
+      -webkit-overflow-scrolling: touch;      /* 行動裝置順滑滾動 */
+      backface-visibility: hidden;            /* 旋轉時避免字重抖動 */
     }
-    .envelope .paper h1{
-      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
-    }
+    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); }
     .envelope .paper p{
       margin:0; white-space:pre-line; line-height:1.95; font-size: var(--fz-body);
-      letter-spacing:.02em;
     }
     .paper .hint{
-      position:absolute; right:12px; bottom:10px; font-size: .9em; opacity:.7;
-      user-select:none;
+      position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none;
     }
 
-    /* 信封本體（z-index 1，紙張後面；不攔滑鼠事件） */
+    /* 信封（在後面，且移除黑色 X） */
     .env-body{
       position:absolute; left:6%; right:6%; bottom:4%; height:58%;
       background: var(--env-pink); border:6px solid var(--env-stroke);
@@ -99,9 +108,6 @@
       box-shadow: 0 12px 24px rgba(0,0,0,.25);
       z-index:1; pointer-events:none;
     }
-    /* 取消黑色叉叉（拿掉原先的 ::before 裝飾） */
-
-    /* 上蓋三角形（也放後面） */
     .env-flap{
       position:absolute; left:6%; right:6%; bottom: calc(4% + 58% - 6px); height:36%;
       overflow:visible; z-index:1; pointer-events:none;
@@ -115,7 +121,6 @@
       border-right:6px solid var(--env-stroke);
       border-left:6px solid var(--env-stroke);
     }
-    /* 愛心（後面） */
     .heart{
       position:absolute; background:var(--env-heart);
       width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
@@ -127,8 +132,7 @@
       content:""; position:absolute; width:100%; height:100%;
       background:var(--env-heart); border:6px solid var(--env-stroke); border-radius:50%;
     }
-    .heart::before{ left:-50%; top:0 }
-    .heart::after{ top:-50%; left:0 }
+    .heart::before{ left:-50%; top:0 } .heart::after{ top:-50%; left:0 }
     .h-big{ left: calc(50% - clamp(32px, 6vw, 52px)); bottom: calc(4% + 58% - clamp(22px, 3vw, 28px)); width:clamp(70px,10vw,92px); height:clamp(70px,10vw,92px) }
     .h-mid{ left: 16%; bottom: calc(4% + 58% - 12px); transform: rotate(45deg) scale(.8) }
     .h-small{ left: 10%; bottom: calc(4% + 58% + 26px); transform: rotate(45deg) scale(.6) }
@@ -165,12 +169,12 @@
 
     .media{
       width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
-      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block
+      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block;
     }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
+
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    /* 相簿右側內文＝統一字級與字體 */
-    .text h3{ margin:0; font-size: var(--fz-body); letter-spacing:.02em; line-height:1.95; font-weight:400 }
+    .text h3{ margin:0; font-size: var(--fz-body); line-height:1.95; }
 
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
@@ -187,22 +191,6 @@
       .text{ text-align:center }
       .envelope .paper{ transform: rotate(-4deg) }
     }
-
-    /* === 全站字體/字重/平滑 強制統一（放在最後，避免任何覆蓋） === */
-    html, body,
-    .title, .msg, .text, .cap, .arrow,
-    .paper, .album, .slides {
-      font-family: var(--hand) !important;
-      font-weight: 400 !important;           /* 統一正常字重 */
-      font-synthesis: none;                   /* 禁止瀏覽器合成粗/斜體 */
-      -webkit-font-smoothing: antialiased;   /* 統一灰階平滑 */
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
-    b, strong, h1, h2, h3, h4, h5, h6 { font-weight: 400 !important; }
-    .paper p, .text h3, .paper h1 { letter-spacing: .02em; line-height: 1.95; }
-    /* emoji 讓左右留點空，避免擠壓字形 */
-    .emo { margin: 0 .06em; }
   </style>
 </head>
 <body>
@@ -438,6 +426,7 @@
   </script>
 </body>
 </html>
+
 
 
 
