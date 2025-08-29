@@ -8,8 +8,10 @@
   <!-- 字體加速 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 全站手寫字體：Ma Shan Zheng -->
+  <!-- 主手寫字體：Ma Shan Zheng -->
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <!-- 繁體備援（手寫感楷體）：cwTeXKai（Google Fonts Early Access） -->
+  <link href="https://fonts.googleapis.com/earlyaccess/cwtexkai.css" rel="stylesheet">
 
   <style>
     :root{
@@ -17,9 +19,9 @@
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
 
-      /* 字體與統一字級 */
-      --hand: "Ma Shan Zheng","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      --fz-body: clamp(18px, 2.6vw, 20px);  /* 內文（信紙＋相簿右側）統一字級 */
+      /* 字體與統一字級（先 MaShanZheng，缺字 fallback 到 cwTeXKai，再到 Noto Serif/ Sans TC） */
+      --hand: "Ma Shan Zheng","cwTeXKai","Noto Serif TC","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --fz-body: clamp(18px, 2.6vw, 20px);   /* 內文（信紙＋相簿右側）統一字級 */
 
       /* 相冊配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
@@ -35,9 +37,11 @@
     body{
       margin:0; color:#2b2b2b; overflow-x:hidden;
       font-family:var(--hand);
-      -webkit-font-smoothing:antialiased; font-smooth:always;
-      letter-spacing:0;                       /* 中文避免額外字距 */
-      background:#000;                        /* 視訊未載入前的底色 */
+      -webkit-font-smoothing:antialiased;
+      font-smooth:always;
+      font-synthesis: none;           /* 不讓瀏覽器合成粗斜體避免字重突變 */
+      letter-spacing:0;               /* 中文避免額外字距 */
+      background:#000;                /* 視訊未載入前的底色 */
     }
 
     /* 背景影片（行動裝置移除模糊以加速） */
@@ -94,7 +98,7 @@
       background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ff79a8'/><stop offset='1' stop-color='%23ff4d88'/></linearGradient></defs><path fill='url(%23g)' d='M12 21.3l-1.4-1.3C5.4 15.4 2 12.3 2 8.5 2 6 4 4 6.5 4c1.9 0 3.2 1 4 2.2C11.3 5 12.6 4 14.5 4 17 4 19 6 19 8.5c0 3.8-3.4 6.9-8.6 11.5z'/><path fill='%23ffd35f' d='M17.5 6l.9 2.1L20.5 9l-2.1.9L17.5 12l-.9-2.1L14.5 9l2.1-.9z'/></svg>");
     }
 
-    /* 「可滑動」提示：用 SVG 圖示避免字型混用 */
+    /* 「可滑動」提示（SVG 圖示） */
     .paper .hint{
       position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none; display:flex; align-items:center; gap:.3em;
     }
@@ -180,7 +184,7 @@
     }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0; font-size: var(--fz-body); font-weight:400 } /* 不再設字距 */
+    .text h3{ margin:0; font-size: var(--fz-body); font-weight:400 }
 
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
@@ -198,7 +202,7 @@
       .envelope .paper{ transform: rotate(-4deg) translate3d(0,0,0) }
     }
 
-    /* === 最後再強制一次全站字體/字重，避免任何覆蓋 === */
+    /* 保險：強制全站使用同一套字體與字重 */
     html, body { font-family: var(--hand) !important; }
     *, *::before, *::after {
       font-family: inherit !important;
@@ -442,5 +446,6 @@
   </script>
 </body>
 </html>
+
 
 
