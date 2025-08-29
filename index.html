@@ -254,6 +254,24 @@
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
   </script>
+  <script>
+  /* 你原本的花瓣 & 相簿翻頁程式 … */
+
+  // ---- jpg/JPG 大小寫容錯 ----
+  document.querySelectorAll('img.media').forEach(img => {
+    const orig = img.getAttribute('src');
+    const m = orig.match(/\.(jpg|jpeg)$/i);
+    if (!m) return;
+    const alt = orig.replace(/\.(jpg|jpeg)$/i,
+      ext => (ext === ext.toLowerCase() ? ext.toUpperCase() : ext.toLowerCase()));
+    let tried = false;
+    img.addEventListener('error', function onErr() {
+      if (tried) { img.removeEventListener('error', onErr); return; }
+      tried = true;
+      img.src = alt;
+    }, { once: true });
+  });
+</script>
 </body>
 </html>
 
