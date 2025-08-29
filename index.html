@@ -165,7 +165,19 @@
       .arrow{ width:16% }
       .text{ text-align:center }
       .envelope .paper{ transform: rotate(-4deg) }
+    } /* 這個大括號原本缺少 → 已補上，避免把下面整段都包進 media query */
+
+    /* === 手寫字體強制統一（放在 <style> 最後，確保覆蓋） === */
+    :root{ --hand: "Ma Shan Zheng","Patrick Hand"; }         /* 只保留兩個手寫字體變數 */
+    html, body { font-family: var(--hand); }                  /* 預設手寫字體 */
+    *, *::before, *::after {                                  /* 強制所有元素繼承同一字體與字重 */
+      font-family: inherit !important;
+      font-weight: 400 !important;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
+    b, strong, h1, h2, h3, h4, h5, h6 { font-weight: 400 !important; }  /* 移除粗體差異 */
+    .title, .msg, .text, .cap, .arrow { font-family: var(--hand) !important; } /* 保險再鎖一次 */
   </style>
 </head>
 <body>
@@ -194,7 +206,7 @@
 能成為你的女朋友，真的好幸運&#x1F495;
 更幸運的是在今年與你相遇嘻嘻~雖然我在感情方面有些許地方小小幼稚(哈哈哈)
 但你總是很有耐心地安撫我、包容我
-謝謝你的愛、體貼、沉穩，給我滿滿呃安全感(我的專屬麻糬+薩摩耶)
+謝謝你的愛、體貼、沉穩，給我滿滿的安全感(我的專屬麻糬+薩摩耶)
 我們在意的東西真的很像，所以無論過去、現在、未來都不用擔心你提出不舒服的點我會覺得怎麼樣喔~
 之後的路，不管發生什麼事情，都要一起陪著彼此走到很遠很遠、走到永遠喔~~
 我真的超級世界無敵霹靂愛你 &#x2764;&#xFE0F; &#x1F496;</p>
@@ -395,7 +407,3 @@
   </script>
 </body>
 </html>
-
-
-
-
