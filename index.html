@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 統一手寫字體（中文：Ma Shan Zheng；英數備援：Patrick Hand） -->
+  <!-- 全站手寫字體：中文為 Ma Shan Zheng，英數備援 Patrick Hand -->
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Patrick+Hand&display=swap" rel="stylesheet">
 
   <style>
@@ -13,13 +13,23 @@
       --paper: rgba(255,255,255,.88);
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
-      /* 全站統一手寫字體（先中文，再英數備援） */
+
+      /* 全站統一手寫字體 */
       --hand: "Ma Shan Zheng","Patrick Hand","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      --album-bg: #3b2f2a;           /* 咖啡色相冊底 */
-      --album-ink: #f7f2ea;          /* 手寫白墨 */
-      --tape-a: #e8d49b;             /* 紙膠帶顏色 */
+
+      /* 相冊配色 */
+      --album-bg: #3b2f2a;
+      --album-ink: #f7f2ea;
+      --tape-a: #e8d49b;
       --tape-b: #d7bf87;
+
+      /* 信封配色 */
+      --env-stroke: #111;
+      --env-pink: #ffd6ea;
+      --env-paper: #fff7df;
+      --env-heart: #ff6b7d;
     }
+
     *{ box-sizing:border-box }
     html,body{ height:100% }
     body{
@@ -45,16 +55,85 @@
     @keyframes fall{ to{ top:110vh } } @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
     @media (prefers-reduced-motion:reduce){ .petal{ display:none } }
 
-    /* 內容框 */
+    /* 外層排版 */
     .wrap{ position:relative; z-index:2; padding: 8vh 18px 18vh }
     .container{ max-width:1100px; margin:0 auto }
 
+    /* ---------- 首屏卡片：信封樣式 ---------- */
     .hero{ margin: 2vh auto 4vh; max-width: 960px }
-    .card{ background:var(--paper); border-radius:var(--r); box-shadow:var(--shadow); padding:32px 22px 26px; text-align:center }
-    .title{ margin:4px 0 8px; font-size: clamp(28px,4vw,40px); letter-spacing:.08em }
-    .msg{ white-space:pre-line; line-height:1.9; font-size: clamp(16px,2.4vw,20px); margin:0 auto; max-width:800px }
+    .envelope{
+      position:relative; margin: 8px auto 14px; width: min(860px, 95vw);
+      aspect-ratio: 4/3;
+    }
+    /* 信紙（顯示你的整段內文） */
+    .envelope .paper{
+      position:absolute; top:-6%; left:11%; width:78%; height:66%;
+      background: var(--env-paper); border:6px solid var(--env-stroke);
+      box-shadow: 0 16px 22px rgba(0,0,0,.25);
+      transform: rotate(-7deg);
+      padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
+      overflow: auto; border-radius: 6px;
+    }
+    .envelope .paper h1{
+      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
+    }
+    .envelope .paper p{
+      margin:0; white-space:pre-line; line-height:1.9; font-size: clamp(15px,2.6vw,20px);
+    }
 
-    /* 相簿：咖啡色相冊背景 + 手寫白墨 */
+    /* 信封主體（底座 + 對角摺線） */
+    .env-body{
+      position:absolute; left:6%; right:6%; bottom:4%; height:58%;
+      background: var(--env-pink); border:6px solid var(--env-stroke);
+      border-bottom-left-radius:8px; border-bottom-right-radius:8px;
+      box-shadow: 0 12px 24px rgba(0,0,0,.25);
+    }
+    .env-body::before{
+      /* 兩條對角線 */
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(137deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%),
+        linear-gradient(223deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    /* 上蓋三角形（用 clip-path 畫） */
+    .env-flap{
+      position:absolute; left:6%; right:6%; bottom: calc(4% + 58% - 6px); height:36%;
+      overflow:visible;
+    }
+    .env-flap::before{
+      content:""; position:absolute; inset:0;
+      background: var(--env-pink);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      box-shadow: 0 8px 18px rgba(0,0,0,.16);
+      border-top:6px solid var(--env-stroke);
+      border-right:6px solid var(--env-stroke);
+      border-left:6px solid var(--env-stroke);
+    }
+
+    /* 信封上的三顆愛心 */
+    .heart{
+      position:absolute; background:var(--env-heart);
+      width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
+      transform: rotate(45deg);
+      box-shadow: 0 6px 10px rgba(0,0,0,.18);
+      z-index:3; border:6px solid var(--env-stroke);
+      border-radius: 8px;
+    }
+    .heart::before, .heart::after{
+      content:""; position:absolute; width:100%; height:100%;
+      background:var(--env-heart); border:6px solid var(--env-stroke); border-radius:50%;
+    }
+    .heart::before{ left:-50%; top:0 }
+    .heart::after{ top:-50%; left:0 }
+
+    .h-big{ left: calc(50% - clamp(32px, 6vw, 52px)); bottom: calc(4% + 58% - clamp(22px, 3vw, 28px)); width:clamp(70px,10vw,92px); height:clamp(70px,10vw,92px) }
+    .h-mid{ left: 16%; bottom: calc(4% + 58% - 12px); transform: rotate(45deg) scale(.8) }
+    .h-small{ left: 10%; bottom: calc(4% + 58% + 26px); transform: rotate(45deg) scale(.6) }
+
+    /* ---------- 相簿（咖啡色相冊） ---------- */
     .album{
       position:relative; margin-top:24px; padding:28px; border-radius:20px;
       background:
@@ -65,26 +144,22 @@
       box-shadow: 0 20px 40px rgba(0,0,0,.35) inset, 0 12px 36px rgba(0,0,0,.2);
     }
     .slides{ position:relative; min-height: 72vh }
-    .slide{
-      position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
-      transition:opacity .5s ease, transform .5s ease; display:block;
-    }
+    .slide{ position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
+            transition:opacity .5s ease, transform .5s ease; display:block; }
     .slide.active{ opacity:1; transform:translateX(0) scale(1) }
 
-    /* 每頁：左圖右文 */
     .page{
-      background:transparent; box-shadow:none;
-      height:100%; display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center;
+      background:transparent; box-shadow:none; height:100%;
+      display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center;
     }
 
-    /* 拍立得＆紙膠帶（不再顯示底部字，文字僅保留右側區塊） */
+    .frame{ position:relative }
     .mat{
       position:relative; background:#fff; padding:14px 14px 42px; border-radius:8px;
       box-shadow: 0 18px 36px rgba(0,0,0,.35);
       transform: rotate(-1.2deg);
     }
     .slide:nth-child(even) .mat{ transform: rotate(.9deg) }
-
     .mat::before, .mat span.tape{
       content:""; position:absolute; width:110px; height:28px; background:
         linear-gradient(180deg,var(--tape-a),var(--tape-b));
@@ -95,19 +170,13 @@
     .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
     .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
 
-    /* 文字：只在右側顯示 */
-    .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0 0 8px; font-size:22px; letter-spacing:.5px; font-weight:400 }
-    .text p{ margin:0; line-height:1.9; font-size:16px; white-space:pre-line; font-weight:400 }
-
-    /* 圖片/影片比例 */
-    .media{
-      width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
-      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block;
-    }
+    .media{ width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
+            box-shadow:0 10px 18px rgba(0,0,0,.18); display:block }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
 
-    /* 左右箭頭 */
+    .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
+    .text h3{ margin:0; font-size:22px; letter-spacing:.5px; font-weight:400 }
+
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
     .arrow svg{ width:40px; height:40px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
@@ -121,6 +190,7 @@
       .media{ max-height:56vh }
       .arrow{ width:16% }
       .text{ text-align:center }
+      .envelope .paper{ transform: rotate(-4deg) }
     }
   </style>
 </head>
@@ -139,11 +209,14 @@
 
   <main class="wrap">
     <div class="container">
-      <!-- 首屏卡片 -->
-      <section class="hero">
-  <div class="card">
-    <h1 class="title">七夕情人節</h1>
-    <p class="msg">情人節快樂，麻糬寶寶
+
+      <!-- 首屏卡片：信封樣式 -->
+      <section class="hero" aria-label="情人節信封卡片">
+        <div class="envelope">
+          <!-- 顯示你的整段內文的「信紙」 -->
+          <div class="paper">
+            <h1>七夕情人節</h1>
+            <p>情人節快樂，麻糬寶寶
 能成為你的女朋友，真的好幸運&#x1F495;
 更幸運的是在今年與你相遇嘻嘻~雖然我在感情方面有些許地方小小幼稚(哈哈哈)
 但你總是很有耐心地安撫我、包容我
@@ -151,9 +224,18 @@
 我們在意的東西真的很像，所以無論過去、現在、未來都不用擔心你提出不舒服的點我會覺得怎麼樣喔~
 之後的路，不管發生什麼事情，都要一起陪著彼此走到很遠很遠、走到永遠喔~~
 我真的超級世界無敵霹靂愛你 &#x2764;&#xFE0F; &#x1F496;</p>
-  </div>
-</section>
+          </div>
 
+          <!-- 信封主體與上蓋（純裝飾用） -->
+          <div class="env-body" aria-hidden="true"></div>
+          <div class="env-flap" aria-hidden="true"></div>
+
+          <!-- 三顆愛心 -->
+          <span class="heart h-small" aria-hidden="true"></span>
+          <span class="heart h-mid" aria-hidden="true"></span>
+          <span class="heart h-big" aria-hidden="true"></span>
+        </div>
+      </section>
 
       <!-- 相簿（咖啡色相冊；左圖右手寫） -->
       <section class="album" aria-label="回憶相簿，可左右翻頁">
@@ -287,7 +369,7 @@
   </main>
 
   <script>
-    // 花瓣
+    /* 花瓣生成 */
     const layer = document.querySelector('.petals');
     function drop(type, count){
       for(let i=0;i<count;i++){
@@ -306,7 +388,7 @@
     }
     drop('sakura', 46); drop('heart', 26);
 
-    // 相簿：箭頭 / 鍵盤 / 觸控
+    /* 相簿：箭頭 / 鍵盤 / 觸控 */
     const slides = Array.from(document.querySelectorAll('.slide'));
     let i = 0;
     function go(n){
@@ -326,7 +408,7 @@
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
 
-    // jpg/JPG 大小寫容錯（圖片 404 時自動換大小寫重試一次）
+    /* 圖片副檔名大小寫容錯：若 .jpg 失敗自動改 .JPG 再試一次 */
     document.querySelectorAll('img.media').forEach(img => {
       const orig = img.getAttribute('src');
       const m = orig.match(/\.(jpg|jpeg)$/i);
@@ -341,5 +423,6 @@
   </script>
 </body>
 </html>
+
 
 
