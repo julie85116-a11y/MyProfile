@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 手寫字體（中文備援） -->
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <!-- 統一手寫字體（中文：Ma Shan Zheng；英數備援：Patrick Hand） -->
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Patrick+Hand&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --paper: rgba(255,255,255,.88);
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
-      --hand: "Patrick Hand","Ma Shan Zheng","ZCOOL KuaiLe","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      /* 全站統一手寫字體（先中文，再英數備援） */
+      --hand: "Ma Shan Zheng","Patrick Hand","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       --album-bg: #3b2f2a;           /* 咖啡色相冊底 */
       --album-ink: #f7f2ea;          /* 手寫白墨 */
       --tape-a: #e8d49b;             /* 紙膠帶顏色 */
@@ -23,7 +24,9 @@
     html,body{ height:100% }
     body{
       margin:0; color:#2b2b2b; overflow-x:hidden;
-      font-family:var(--hand); letter-spacing:.3px;
+      font-family:var(--hand);
+      -webkit-font-smoothing:antialiased; font-smooth:always;
+      letter-spacing:.3px;
     }
 
     /* 背景影片 */
@@ -68,13 +71,13 @@
     }
     .slide.active{ opacity:1; transform:translateX(0) scale(1) }
 
-    /* 讓頁面看起來像貼在相冊上：去掉白底，保留排版 */
+    /* 每頁：左圖右文 */
     .page{
       background:transparent; box-shadow:none;
       height:100%; display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center;
     }
 
-    /* Polaroid 卡&紙膠帶 */
+    /* 拍立得＆紙膠帶（不再顯示底部字，文字僅保留右側區塊） */
     .mat{
       position:relative; background:#fff; padding:14px 14px 42px; border-radius:8px;
       box-shadow: 0 18px 36px rgba(0,0,0,.35);
@@ -82,13 +85,6 @@
     }
     .slide:nth-child(even) .mat{ transform: rotate(.9deg) }
 
-    .mat::after{
-      /* 底部手寫標題：由 JS 把 <img alt> 複製到 data-cap */
-      content: attr(data-cap);
-      position:absolute; left:14px; right:14px; bottom:10px;
-      color:#333; opacity:.8; font-size:14px; letter-spacing:.5px; text-align:left;
-    }
-    /* 兩條紙膠帶 */
     .mat::before, .mat span.tape{
       content:""; position:absolute; width:110px; height:28px; background:
         linear-gradient(180deg,var(--tape-a),var(--tape-b));
@@ -99,10 +95,10 @@
     .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
     .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
 
-    /* 內容（右側手寫白字） */
+    /* 文字：只在右側顯示 */
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0 0 8px; font-size:22px; letter-spacing:.5px }
-    .text p{ margin:0; line-height:1.9; font-size:16px; white-space:pre-line }
+    .text h3{ margin:0 0 8px; font-size:22px; letter-spacing:.5px; font-weight:400 }
+    .text p{ margin:0; line-height:1.9; font-size:16px; white-space:pre-line; font-weight:400 }
 
     /* 圖片/影片比例 */
     .media{
@@ -111,7 +107,7 @@
     }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
 
-    /* 左右箭頭：相冊邊緣的白色手繪箭頭感 */
+    /* 左右箭頭 */
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
     .arrow svg{ width:40px; height:40px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
@@ -125,7 +121,6 @@
       .media{ max-height:56vh }
       .arrow{ width:16% }
       .text{ text-align:center }
-      .mat::after{ text-align:center }
     }
   </style>
 </head>
@@ -149,12 +144,12 @@
         <div class="card">
           <h1 class="title">七夕情人節</h1>
           <p class="msg">情人節快樂，麻糬寶寶
-能成為你的女朋友，真的好幸運&#x1F495; 
+能成為你的女朋友，真的好幸運💕
 之後的路，不管發生什麼事，都要一起陪著彼此走到很遠很遠喔～</p>
         </div>
       </section>
 
-      <!-- 相簿（咖啡色相冊頁；左圖右手寫） -->
+      <!-- 相簿（咖啡色相冊；左圖右手寫） -->
       <section class="album" aria-label="回憶相簿，可左右翻頁">
         <div class="arrow arrow-left" id="prev" aria-label="上一張" title="上一張">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -168,7 +163,7 @@
           <article class="slide active">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
-              <div class="text"><h3>曖昧的時候都會給我看手手</h3><p></p></div>
+              <div class="text"><h3>曖昧的時候都會給我看手手</h3></div>
             </div>
           </article>
 
@@ -176,7 +171,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
-              <div class="text"><h3>一起追太陽看日出</h3><p>（好浪漫</p></div>
+              <div class="text"><h3>一起追太陽看日出（好浪漫</h3></div>
             </div>
           </article>
 
@@ -184,7 +179,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第三張.JPG" alt="拍拍貼機"></div></div>
-              <div class="text"><h3>一起拍拍貼機</h3><p></p></div>
+              <div class="text"><h3>一起拍拍貼機</h3></div>
             </div>
           </article>
 
@@ -192,7 +187,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第四張.jpg" alt="520 玫瑰花"></div></div>
-              <div class="text"><h3>520 有人送了一束玫瑰花</h3><p>（浪漫儀式感的男人</p></div>
+              <div class="text"><h3>520 有人送了一束玫瑰花（浪漫儀式感的男人</h3></div>
             </div>
           </article>
 
@@ -200,7 +195,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第五張.jpg" alt="日常逛 IKEA"></div></div>
-              <div class="text"><h3>日常約會 逛 IKEA</h3><p>甜蜜單純的生活</p></div>
+              <div class="text"><h3>日常約會 逛 IKEA｜甜蜜單純的生活</h3></div>
             </div>
           </article>
 
@@ -208,7 +203,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第六張.JPG" alt="台南遊 偷拍寶寶"></div></div>
-              <div class="text"><h3>台南遊 偷拍寶寶</h3><p></p></div>
+              <div class="text"><h3>台南遊｜偷拍寶寶</h3></div>
             </div>
           </article>
 
@@ -216,7 +211,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第七張.jpg" alt="可可愛愛的床照"></div></div>
-              <div class="text"><h3>可可愛愛的床照</h3><p></p></div>
+              <div class="text"><h3>可可愛愛的床照</h3></div>
             </div>
           </article>
 
@@ -224,7 +219,7 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第八張.JPG" alt="到哪都要逛枕頭"></div></div>
-              <div class="text"><h3>到哪都要逛枕頭的寶寶</h3><p></p></div>
+              <div class="text"><h3>到哪都要逛枕頭的寶寶</h3></div>
             </div>
           </article>
 
@@ -238,7 +233,7 @@
                   您的瀏覽器不支援影片播放。
                 </video>
               </div></div>
-              <div class="text"><h3>寶寶耍可愛日常</h3><p></p></div>
+              <div class="text"><h3>寶寶耍可愛日常</h3></div>
             </div>
           </article>
 
@@ -246,21 +241,21 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3412.JPG" alt="近期：女友視角"></div></div>
-              <div class="text"><h3>近期照片：女友視角</h3><p></p></div>
+              <div class="text"><h3>近期照片：女友視角</h3></div>
             </div>
           </article>
 
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3419.JPG" alt="近期：男友視角"></div></div>
-              <div class="text"><h3>近期照片：男友視角</h3><p></p></div>
+              <div class="text"><h3>近期照片：男友視角</h3></div>
             </div>
           </article>
 
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3454.JPG" alt="又是不錯看的合照"></div></div>
-              <div class="text"><h3>又是不錯看的一張對鏡拍</h3><p></p></div>
+              <div class="text"><h3>又是不錯看的一張對鏡拍</h3></div>
             </div>
           </article>
 
@@ -268,14 +263,14 @@
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
-              <div class="text"><h3>七夕寶寶提前準備的玫瑰花啊啊啊</h3><p></p></div>
+              <div class="text"><h3>七夕寶寶提前準備的玫瑰花啊啊啊</h3></div>
             </div>
           </article>
 
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第十張.jpg" alt="巧克力"></div></div>
-              <div class="text"><h3>還有一盒巧克力</h3><p>❤️</p></div>
+              <div class="text"><h3>還有一盒巧克力 ❤️</h3></div>
             </div>
           </article>
         </div>
@@ -324,11 +319,6 @@
     area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
-
-    // 把 <img alt> 放到父層 .mat 的 data-cap，供 Polaroid 底部手寫標題使用
-    document.querySelectorAll('.mat > img.media').forEach(img=>{
-      img.parentElement.setAttribute('data-cap', img.alt || '');
-    });
 
     // jpg/JPG 大小寫容錯（圖片 404 時自動換大小寫重試一次）
     document.querySelectorAll('img.media').forEach(img => {
