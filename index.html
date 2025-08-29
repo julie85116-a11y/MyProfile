@@ -6,12 +6,12 @@
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
   <style>
-    /* 直接宣告 Ma Shan Zheng（固定單一字重），避免載入其它中文字體造成混雜 */
+    /* 只載入 Ma Shan Zheng 的單一字重（400），避免混字重/混字型 */
     @font-face{
       font-family: "HandUnified";
       font-style: normal;
       font-weight: 400;
-      font-display: block; /* 字體載入前先不顯示，避免 FOUT 造成粗細不一致 */
+      font-display: block; /* 字體未載入前先不顯示，避免 FOUT 造成粗細不一 */
       src: url("https://fonts.gstatic.com/s/mashanzheng/v16/NaPecZTIAOhVxoMyOr9n_E7fdMPmBA.woff2") format("woff2");
       unicode-range: U+0-7F, U+2E80-2EFF, U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE10-FE6F, U+FF00-FFEF;
     }
@@ -24,6 +24,8 @@
       /* 統一字體 / 字級 / 行高 */
       --hand: "HandUnified";
       --fz-body: clamp(18px, 2.6vw, 20px);
+      --lh: 2.05;
+      --track: .02em;
 
       /* 相簿配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
@@ -37,30 +39,27 @@
     *{ box-sizing:border-box }
     html,body{ height:100% }
 
-    /* ====== 全站字體「鎖死」：只用 HandUnified，Emoji 走彩色字體 ====== */
-    html, body,
-    .title, .msg, .text, .cap, .arrow,
-    .paper, .album, .slides {
+    /* ===== 把全站字體「鎖死」成單一款，固定 400，停用所有合成與連字 ===== */
+    .use-hand,
+    html, body, .title, .msg, .text, .cap, .arrow, .paper, .album, .slides {
       font-family: var(--hand), "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji" !important;
       font-weight: 400 !important;
       font-style: normal !important;
       font-synthesis: none;
       font-synthesis-weight: none;
       font-synthesis-style: none;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "clig" 0, "kern" 0;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
-      letter-spacing: .02em;
-    }
-    /* 停用連字等可能造成個別字外觀差異的特性 */
-    .paper, .text, .title, .msg {
-      font-kerning: none;
-      font-variant-ligatures: none;
-      font-feature-settings: "liga" 0, "clig" 0;
-      line-height: 1.95;
+      paint-order: stroke fill;         /* 避免旋轉後筆畫變粗 */
+      letter-spacing: var(--track);
+      line-height: var(--lh);
     }
 
-    /* 在字體尚未 ready 前，先隱藏整頁，避免 FOUT 混字重 */
+    /* 字體未 ready 前先隱藏，避免先以系統字體繪製造成不一致 */
     html:not(.hand-ready) body{ visibility:hidden }
 
     body{
@@ -98,7 +97,6 @@
       position:relative; margin: 8px auto 14px; width: min(860px, 95vw);
       aspect-ratio: 4/3;
     }
-    /* 信紙（z-index 3，最上層） */
     .envelope .paper{
       position:absolute; top:-6%; left:11%; width:78%; height:66%;
       background: var(--env-paper); border:6px solid var(--env-stroke);
@@ -106,10 +104,13 @@
       transform: rotate(-7deg); z-index:3;
       padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
       overflow: auto; border-radius: 6px;
-      -webkit-overflow-scrolling: touch;      /* 行動裝置順滑滾動 */
-      backface-visibility: hidden;            /* 旋轉時避免字重抖動 */
+      -webkit-overflow-scrolling: touch;
+      backface-visibility: hidden;
     }
-    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); }
+    .envelope .paper h1{
+      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px);
+      font-weight: 400 !important;
+    }
     .envelope .paper p{
       margin:0; white-space:pre-line; font-size: var(--fz-body);
     }
@@ -117,7 +118,7 @@
       position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none;
     }
 
-    /* 信封（在後面，且移除黑色 X ） */
+    /* 信封（後景；無黑色叉叉） */
     .env-body{
       position:absolute; left:6%; right:6%; bottom:4%; height:58%;
       background: var(--env-pink); border:6px solid var(--env-stroke);
@@ -191,7 +192,7 @@
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
 
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0; font-size: var(--fz-body); line-height:1.95; }
+    .text h3{ margin:0; font-size: var(--fz-body); line-height: var(--lh); }
 
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
@@ -210,7 +211,7 @@
     }
   </style>
 </head>
-<body>
+<body class="use-hand">
 
   <!-- 背景影片 -->
   <video class="bg-video" autoplay muted loop playsinline poster="照片/IMG_3454.JPG">
@@ -229,12 +230,11 @@
       <!-- 首屏卡片：信封在後、信紙在前 -->
       <section class="hero" aria-label="情人節信封卡片">
         <div class="envelope">
-          <!-- 信紙（前景、可滾動/選取） -->
           <div class="paper">
             <h1>七夕情人節</h1>
             <p>情人節快樂，麻糬寶寶
 能成為你的女朋友，真的好幸運💕
-更幸運的是在今年與你相遇喔~雖然我在感情方面有些許地方小小幼稚(哈哈哈你也是啦)
+更幸運的是在今年與你相遇喔~雖然我在感情方面有些許地方小小幼稚(哈哈哈寶寶其實也是啦)
 但你總是很有耐心地安撫我、包容我
 謝謝你的愛、體貼、沉穩，給我滿滿的安全感(我的專屬麻糬+薩摩耶)
 我們在意的東西真的很像，所以無論過去、現在、未來都不用擔心你提出不舒服的點我會覺得怎麼樣~
@@ -252,7 +252,7 @@
         </div>
       </section>
 
-      <!-- 相簿（咖啡色相冊；左圖右手寫） -->
+      <!-- 相簿 -->
       <section class="album" aria-label="回憶相簿，可左右翻頁">
         <div class="arrow arrow-left" id="prev" aria-label="上一張" title="上一張">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -262,7 +262,6 @@
         </div>
 
         <div class="slides" id="slides">
-          <!-- 1 -->
           <article class="slide active">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
@@ -270,7 +269,6 @@
             </div>
           </article>
 
-          <!-- 2 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
@@ -278,7 +276,6 @@
             </div>
           </article>
 
-          <!-- 3 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第三張.JPG" alt="拍拍貼機"></div></div>
@@ -286,7 +283,6 @@
             </div>
           </article>
 
-          <!-- 4 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第四張.jpg" alt="520 玫瑰花"></div></div>
@@ -294,7 +290,6 @@
             </div>
           </article>
 
-          <!-- 5 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第五張.jpg" alt="日常逛 IKEA"></div></div>
@@ -302,7 +297,6 @@
             </div>
           </article>
 
-          <!-- 6 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第六張.JPG" alt="台南遊 偷拍寶寶"></div></div>
@@ -310,7 +304,6 @@
             </div>
           </article>
 
-          <!-- 7 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第七張.jpg" alt="可可愛愛的床照"></div></div>
@@ -318,7 +311,6 @@
             </div>
           </article>
 
-          <!-- 8 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第八張.JPG" alt="到哪都要逛枕頭"></div></div>
@@ -326,7 +318,6 @@
             </div>
           </article>
 
-          <!-- 9：影片 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span>
@@ -340,7 +331,6 @@
             </div>
           </article>
 
-          <!-- 10～12：近期三張 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3412.JPG" alt="近期：女友視角"></div></div>
@@ -362,7 +352,6 @@
             </div>
           </article>
 
-          <!-- 13～14：七夕花 & 巧克力 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
@@ -379,15 +368,15 @@
         </div>
       </section>
 
-      <p class="cap" style="text-align:center;color:#fff;opacity:.9;margin-top:18px;font-size:var(--fz-body)">左右鍵、滑動都可以翻頁</p>
+      <p class="cap use-hand" style="text-align:center;color:#fff;opacity:.9;margin-top:18px;font-size:var(--fz-body)">左右鍵、滑動都可以翻頁</p>
     </div>
   </main>
 
   <script>
-    // 等字體真正 ready 再顯示，避免載入瞬間用系統字體造成粗細不一
+    /* 確認字型載入完成後再顯示（避免粗細不一） */
     document.fonts.ready.then(() => document.documentElement.classList.add('hand-ready'));
 
-    // 花瓣數量：桌機多、手機少（效能優化）
+    // 花瓣數量：桌機多、手機少
     const isMobile = matchMedia('(max-width: 760px)').matches;
     const sak = isMobile ? 22 : 46;
     const hearts = isMobile ? 12 : 26;
@@ -425,7 +414,7 @@
       if(e.key==='ArrowRight') go(i+1);
     }, {passive:true});
 
-    // 觸控滑動（passive 以提升效能）
+    // 觸控滑動（passive）
     let sx=0, dx=0; const area = document.getElementById('slides');
     area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
@@ -446,6 +435,7 @@
   </script>
 </body>
 </html>
+
 
 
 
