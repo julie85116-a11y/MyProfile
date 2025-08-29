@@ -8,8 +8,8 @@
   <!-- 字體加速 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 全站手寫字體（中文為主，英數備援） -->
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <!-- 全站手寫字體：Ma Shan Zheng -->
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -18,8 +18,8 @@
       --r:18px;
 
       /* 字體與統一字級 */
-      --hand: "Ma Shan Zheng","Patrick Hand","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      --fz-body: clamp(18px, 2.6vw, 20px);   /* 內文（信紙＋相簿右側）統一字級 */
+      --hand: "Ma Shan Zheng","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --fz-body: clamp(18px, 2.6vw, 20px);  /* 內文（信紙＋相簿右側）統一字級 */
 
       /* 相冊配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
@@ -36,15 +36,13 @@
       margin:0; color:#2b2b2b; overflow-x:hidden;
       font-family:var(--hand);
       -webkit-font-smoothing:antialiased; font-smooth:always;
-      letter-spacing:.3px;
-      background:#000; /* 視訊未載入前的底色 */
+      letter-spacing:0;                       /* 中文避免額外字距 */
+      background:#000;                        /* 視訊未載入前的底色 */
     }
 
     /* 背景影片（行動裝置移除模糊以加速） */
     .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.6) saturate(1.05) }
-    @media (max-width:760px){
-      .bg-video{ filter:brightness(.6) } /* 去除 blur 以免卡頓 */
-    }
+    @media (max-width:760px){ .bg-video{ filter:brightness(.6) } }
     .bg-overlay{ position:fixed; inset:0; z-index:0; pointer-events:none;
       background:
         radial-gradient(60% 60% at 50% 20%, rgba(255,182,206,.22) 0%, transparent 60%),
@@ -54,7 +52,7 @@
     .petals{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden }
     .petal{ position:absolute; top:-12vh; opacity:.9; width:26px; height:30px; background-size:100% 100%; background-repeat:no-repeat;
             animation: fall var(--fall,14s) linear infinite, sway var(--sway,4s) ease-in-out infinite alternate;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)) ; will-change: transform, top; }
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)); will-change: transform, top; }
     .petal.sakura{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='p' cx='50%' cy='35%'><stop offset='0' stop-color='%23ffe2f0'/><stop offset='1' stop-color='%23ff80ab'/></radialGradient></defs><path d='M20 1 C33 10 33 30 20 39 C7 30 7 10 20 1 Z' fill='url(%23p)'/><path d='M20 18 C22 21 22 24 20 28 C18 24 18 21 20 18 Z' fill='%23fff' opacity='.28'/></svg>") }
     .petal.heart{  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path d='M20 35 C14 29 4 23 4 14 C4 8 8 5 12 5 c4 0 6 2 8 5 c2-3 4-5 8-5 c4 0 8 3 8 9 c0 9-10 15-16 21z' fill='%23e84a78'/></svg>") }
     @keyframes fall{ to{ top:110vh } }
@@ -81,16 +79,19 @@
       overflow: auto; border-radius: 6px;
       -webkit-overflow-scrolling: touch;  /* 行動裝置順滑滾動 */
     }
-    .envelope .paper h1{
-      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
-    }
-    .envelope .paper p{
-      margin:0; white-space:pre-line; line-height:1.9; font-size: var(--fz-body);
-    }
+    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400 }
+    .envelope .paper p{ margin:0; white-space:pre-line; line-height:1.9; font-size: var(--fz-body) }
+
+    /* emoji / 特殊符號用專屬字型，校正基線 */
+    .emoji{ font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"; font-size:.95em; vertical-align:-.1em }
+
+    /* 「可滑動」提示：用 SVG 圖示避免字型混用 */
     .paper .hint{
-      position:absolute; right:12px; bottom:10px; font-size: .9em; opacity:.7;
-      user-select:none;
+      position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none; display:flex; align-items:center; gap:.3em;
     }
+    .icon-arrows{ width:1.1em; height:1.1em; display:inline-block; background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3l-3 3m3-3l3 3M12 21l-3-3m3 3l3-3M12 6v12'/></svg>")
+      no-repeat center / contain; }
 
     /* 信封本體（z-index 1，紙張後面；不攔滑鼠事件） */
     .env-body{
@@ -100,7 +101,7 @@
       box-shadow: 0 12px 24px rgba(0,0,0,.25);
       z-index:1; pointer-events:none;
     }
-    /* 取消黑色叉叉：不再產生 ::before 裝飾（故意不寫任何 ::before） */
+    /* 不產生黑色叉叉：沒有 ::before */
 
     /* 上蓋三角形（也放後面） */
     .env-flap{
@@ -116,7 +117,7 @@
       border-right:6px solid var(--env-stroke);
       border-left:6px solid var(--env-stroke);
     }
-    /* 愛心（後面） */
+    /* 愛心（後景） */
     .heart{
       position:absolute; background:var(--env-heart);
       width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
@@ -170,8 +171,7 @@
     }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    /* 相簿右側內文＝統一字級與字體 */
-    .text h3{ margin:0; font-size: var(--fz-body); letter-spacing:.5px; font-weight:400 }
+    .text h3{ margin:0; font-size: var(--fz-body); font-weight:400 } /* 不再設字距 */
 
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
@@ -223,14 +223,14 @@
           <div class="paper">
             <h1>七夕情人節</h1>
             <p>情人節快樂，麻糬寶寶
-能成為你的女朋友，真的好幸運&#x1F495;
+能成為你的女朋友，真的好幸運<span class="emoji">💕</span>
 更幸運的是在今年與你相遇嘻嘻~雖然我在感情方面有些許地方小小幼稚(哈哈哈)
 但你總是很有耐心地安撫我、包容我
 謝謝你的愛、體貼、沉穩，給我滿滿的安全感(我的專屬麻糬+薩摩耶)
 我們在意的東西真的很像，所以無論過去、現在、未來都不用擔心你提出不舒服的點我會覺得怎麼樣喔~
 之後的路，不管發生什麼事情，都要一起陪著彼此走到很遠很遠、走到永遠喔~~
-我真的超級世界無敵霹靂愛你 &#x2764;&#xFE0F; &#x1F496;</p>
-            <div class="hint">⬆⬇ 可滑動</div>
+我真的超級世界無敵霹靂愛你 <span class="emoji">❤️</span> <span class="emoji">💖</span></p>
+            <div class="hint"><span class="icon-arrows" aria-hidden="true"></span>可滑動</div>
           </div>
 
           <!-- 信封（後景、僅裝飾） -->
@@ -433,3 +433,4 @@
   </script>
 </body>
 </html>
+
