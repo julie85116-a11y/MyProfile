@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
 
-  <!-- 全站手寫字體 -->
+  <!-- 全站手寫字體（中文為主，英數備援） -->
   <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Patrick+Hand&display=swap" rel="stylesheet">
 
   <style>
@@ -13,7 +13,10 @@
       --paper: rgba(255,255,255,.88);
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
+
+      /* 字體與統一字級 */
       --hand: "Ma Shan Zheng","Patrick Hand","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --fz-body: clamp(18px, 2.6vw, 20px);   /* 內文（信紙＋相簿右側）統一字級 */
 
       /* 相冊配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
@@ -31,22 +34,28 @@
       font-family:var(--hand);
       -webkit-font-smoothing:antialiased; font-smooth:always;
       letter-spacing:.3px;
+      background:#000; /* 視訊未載入前的底色 */
     }
 
-    /* 背景影片 */
-    .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.55) saturate(1.05) blur(1px) }
+    /* 背景影片（行動裝置移除模糊以加速） */
+    .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.6) saturate(1.05) }
+    @media (max-width:760px){
+      .bg-video{ filter:brightness(.6) } /* 去除 blur 以免卡頓 */
+    }
     .bg-overlay{ position:fixed; inset:0; z-index:0; pointer-events:none;
-      background: radial-gradient(60% 60% at 50% 20%, rgba(255,182,206,.22) 0%, transparent 60%),
-                  linear-gradient(180deg, rgba(255,233,241,.35) 0%, rgba(255,233,241,.05) 40%, rgba(240,248,245,.1) 100%); }
+      background:
+        radial-gradient(60% 60% at 50% 20%, rgba(255,182,206,.22) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(255,233,241,.35) 0%, rgba(255,233,241,.05) 40%, rgba(240,248,245,.1) 100%); }
 
     /* 花瓣/愛心 */
     .petals{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden }
     .petal{ position:absolute; top:-12vh; opacity:.9; width:26px; height:30px; background-size:100% 100%; background-repeat:no-repeat;
             animation: fall var(--fall,14s) linear infinite, sway var(--sway,4s) ease-in-out infinite alternate;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)) }
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)) ; will-change: transform, top; }
     .petal.sakura{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='p' cx='50%' cy='35%'><stop offset='0' stop-color='%23ffe2f0'/><stop offset='1' stop-color='%23ff80ab'/></radialGradient></defs><path d='M20 1 C33 10 33 30 20 39 C7 30 7 10 20 1 Z' fill='url(%23p)'/><path d='M20 18 C22 21 22 24 20 28 C18 24 18 21 20 18 Z' fill='%23fff' opacity='.28'/></svg>") }
     .petal.heart{  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path d='M20 35 C14 29 4 23 4 14 C4 8 8 5 12 5 c4 0 6 2 8 5 c2-3 4-5 8-5 c4 0 8 3 8 9 c0 9-10 15-16 21z' fill='%23e84a78'/></svg>") }
-    @keyframes fall{ to{ top:110vh } } @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
+    @keyframes fall{ to{ top:110vh } }
+    @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
     @media (prefers-reduced-motion:reduce){ .petal{ display:none } }
 
     /* 外層排版 */
@@ -64,12 +73,21 @@
       position:absolute; top:-6%; left:11%; width:78%; height:66%;
       background: var(--env-paper); border:6px solid var(--env-stroke);
       box-shadow: 0 16px 22px rgba(0,0,0,.25);
-      transform: rotate(-7deg); z-index:3;
+      transform: rotate(-7deg) translate3d(0,0,0); z-index:3;
       padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
       overflow: auto; border-radius: 6px;
+      -webkit-overflow-scrolling: touch;  /* 行動裝置順滑滾動 */
     }
-    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400 }
-    .envelope .paper p{ margin:0; white-space:pre-line; line-height:1.9; font-size: clamp(15px,2.6vw,20px) }
+    .envelope .paper h1{
+      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
+    }
+    .envelope .paper p{
+      margin:0; white-space:pre-line; line-height:1.9; font-size: var(--fz-body);
+    }
+    .paper .hint{
+      position:absolute; right:12px; bottom:10px; font-size: .9em; opacity:.7;
+      user-select:none;
+    }
 
     /* 信封本體（z-index 1，紙張後面；不攔滑鼠事件） */
     .env-body{
@@ -79,13 +97,8 @@
       box-shadow: 0 12px 24px rgba(0,0,0,.25);
       z-index:1; pointer-events:none;
     }
-    .env-body::before{
-      content:""; position:absolute; inset:0; z-index:1;
-      background:
-        linear-gradient(137deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%),
-        linear-gradient(223deg, transparent 47%, var(--env-stroke) 48%, var(--env-stroke) 52%, transparent 53%);
-      opacity:.9; pointer-events:none;
-    }
+    /* 取消黑色叉叉：不再產生 ::before 裝飾 */
+
     /* 上蓋三角形（也放後面） */
     .env-flap{
       position:absolute; left:6%; right:6%; bottom: calc(4% + 58% - 6px); height:36%;
@@ -100,12 +113,11 @@
       border-right:6px solid var(--env-stroke);
       border-left:6px solid var(--env-stroke);
     }
-    /* 愛心也放後面 */
+    /* 愛心（後面） */
     .heart{
       position:absolute; background:var(--env-heart);
       width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
-      transform: rotate(45deg);
-      box-shadow: 0 6px 10px rgba(0,0,0,.18);
+      transform: rotate(45deg); box-shadow: 0 6px 10px rgba(0,0,0,.18);
       z-index:1; border:6px solid var(--env-stroke);
       border-radius: 8px; pointer-events:none;
     }
@@ -130,9 +142,11 @@
       box-shadow: 0 20px 40px rgba(0,0,0,.35) inset, 0 12px 36px rgba(0,0,0,.2);
     }
     .slides{ position:relative; min-height: 72vh }
-    .slide{ position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
-            transition:opacity .5s ease, transform .5s ease; display:block; }
-    .slide.active{ opacity:1; transform:translateX(0) scale(1) }
+    .slide{
+      position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98) translate3d(0,0,0);
+      transition:opacity .5s ease, transform .5s ease; display:block; will-change: transform, opacity;
+    }
+    .slide.active{ opacity:1; transform:translateX(0) scale(1) translate3d(0,0,0) }
     .page{ background:transparent; box-shadow:none; height:100%;
            display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center; }
     .frame{ position:relative }
@@ -146,11 +160,16 @@
     }
     .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
     .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
-    .media{ width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
-            box-shadow:0 10px 18px rgba(0,0,0,.18); display:block }
+
+    .media{
+      width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
+      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block
+    }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0; font-size:22px; letter-spacing:.5px; font-weight:400 }
+    /* 相簿右側內文＝統一字級與字體 */
+    .text h3{ margin:0; font-size: var(--fz-body); letter-spacing:.5px; font-weight:400 }
+
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
     .arrow svg{ width:40px; height:40px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
@@ -164,20 +183,18 @@
       .media{ max-height:56vh }
       .arrow{ width:16% }
       .text{ text-align:center }
-      .envelope .paper{ transform: rotate(-4deg) }
-    } /* 這個大括號原本缺少 → 已補上，避免把下面整段都包進 media query */
+      .envelope .paper{ transform: rotate(-4deg) translate3d(0,0,0) }
+    }
 
-    /* === 手寫字體強制統一（放在 <style> 最後，確保覆蓋） === */
-    :root{ --hand: "Ma Shan Zheng","Patrick Hand"; }         /* 只保留兩個手寫字體變數 */
-    html, body { font-family: var(--hand); }                  /* 預設手寫字體 */
-    *, *::before, *::after {                                  /* 強制所有元素繼承同一字體與字重 */
+    /* === 最後再強制一次全站字體/字重，避免任何覆蓋 === */
+    html, body { font-family: var(--hand) !important; }
+    *, *::before, *::after {
       font-family: inherit !important;
       font-weight: 400 !important;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
-    b, strong, h1, h2, h3, h4, h5, h6 { font-weight: 400 !important; }  /* 移除粗體差異 */
-    .title, .msg, .text, .cap, .arrow { font-family: var(--hand) !important; } /* 保險再鎖一次 */
+    b, strong, h1, h2, h3, h4, h5, h6 { font-weight: 400 !important; }
   </style>
 </head>
 <body>
@@ -210,6 +227,7 @@
 我們在意的東西真的很像，所以無論過去、現在、未來都不用擔心你提出不舒服的點我會覺得怎麼樣喔~
 之後的路，不管發生什麼事情，都要一起陪著彼此走到很遠很遠、走到永遠喔~~
 我真的超級世界無敵霹靂愛你 &#x2764;&#xFE0F; &#x1F496;</p>
+            <div class="hint">⬆⬇ 可滑動</div>
           </div>
 
           <!-- 信封（後景、僅裝飾） -->
@@ -348,12 +366,16 @@
         </div>
       </section>
 
-      <p class="cap" style="text-align:center;color:#fff;opacity:.9;margin-top:18px">左右鍵、滑動都可以翻頁</p>
+      <p class="cap" style="text-align:center;color:#fff;opacity:.9;margin-top:18px;font-size:var(--fz-body)">左右鍵、滑動都可以翻頁</p>
     </div>
   </main>
 
   <script>
-    // 花瓣
+    // 花瓣數量：桌機多、手機少（效能優化）
+    const isMobile = matchMedia('(max-width: 760px)').matches;
+    const sak = isMobile ? 22 : 46;
+    const hearts = isMobile ? 12 : 26;
+
     const layer = document.querySelector('.petals');
     function drop(type, count){
       for(let i=0;i<count;i++){
@@ -370,7 +392,7 @@
         layer.appendChild(el);
       }
     }
-    drop('sakura', 46); drop('heart', 26);
+    drop('sakura', sak); drop('heart', hearts);
 
     // 相簿：箭頭 / 鍵盤 / 觸控
     const slides = Array.from(document.querySelectorAll('.slide'));
@@ -385,14 +407,15 @@
     document.addEventListener('keydown', e => {
       if(e.key==='ArrowLeft') go(i-1);
       if(e.key==='ArrowRight') go(i+1);
-    });
-    // 觸控滑動
+    }, {passive:true});
+
+    // 觸控滑動（passive 以提升效能）
     let sx=0, dx=0; const area = document.getElementById('slides');
     area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
-    area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
+    area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; }, {passive:true});
 
-    // 圖片大小寫容錯
+    // 圖片大小寫容錯（JPG/jpg）
     document.querySelectorAll('img.media').forEach(img => {
       const orig = img.getAttribute('src');
       const m = orig.match(/\.(jpg|jpeg)$/i);
@@ -407,3 +430,4 @@
   </script>
 </body>
 </html>
+
