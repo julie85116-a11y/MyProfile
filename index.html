@@ -4,67 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
-
   <style>
     :root{ --paper: rgba(255,255,255,.88); --shadow: 0 14px 36px rgba(0,0,0,.18); --r:18px }
     *{ box-sizing:border-box } html,body{ height:100% }
     body{ margin:0; color:#2b2b2b; overflow-x:hidden; font-family:"Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif }
 
     /* 背景影片 */
-    .bg-video{
-      position: fixed; inset: 0; width: 100vw; height: 100vh;
-      object-fit: cover; z-index: -1;
-      filter: brightness(.55) saturate(1.05) blur(1px);
-    }
-    .bg-overlay{
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.55) saturate(1.05) blur(1px) }
+    .bg-overlay{ position:fixed; inset:0; z-index:0; pointer-events:none;
       background: radial-gradient(60% 60% at 50% 20%, rgba(255,182,206,.22) 0%, transparent 60%),
-                  linear-gradient(180deg, rgba(255,233,241,.35) 0%, rgba(255,233,241,.05) 40%, rgba(240,248,245,.1) 100%);
-    }
+                  linear-gradient(180deg, rgba(255,233,241,.35) 0%, rgba(255,233,241,.05) 40%, rgba(240,248,245,.1) 100%); }
 
     /* 花瓣/愛心 */
     .petals{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden }
-    .petal{
-      position:absolute; top:-12vh; opacity:.9; width:26px; height:30px; background-size:100% 100%;
-      background-repeat:no-repeat; animation: fall var(--fall,14s) linear infinite, sway var(--sway,4s) ease-in-out infinite alternate;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)); will-change: top, transform
-    }
-    .petal.sakura{ background-image:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'>\
-<defs><radialGradient id='p' cx='50%' cy='35%'><stop offset='0' stop-color='%23ffe2f0'/><stop offset='1' stop-color='%23ff80ab'/></radialGradient></defs>\
-<path d='M20 1 C33 10 33 30 20 39 C7 30 7 10 20 1 Z' fill='url(%23p)'/><path d='M20 18 C22 21 22 24 20 28 C18 24 18 21 20 18 Z' fill='%23fff' opacity='.28'/></svg>") }
-    .petal.heart{ background-image:url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'>\
-<path d='M20 35 C14 29 4 23 4 14 C4 8 8 5 12 5 c4 0 6 2 8 5 c2-3 4-5 8-5 c4 0 8 3 8 9 c0 9-10 15-16 21z' fill='%23e84a78'/></svg>") }
-    @keyframes fall{ to{ top:110vh } }
-    @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
+    .petal{ position:absolute; top:-12vh; opacity:.9; width:26px; height:30px; background-size:100% 100%; background-repeat:no-repeat;
+            animation: fall var(--fall,14s) linear infinite, sway var(--sway,4s) ease-in-out infinite alternate;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,.08)) }
+    .petal.sakura{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='p' cx='50%' cy='35%'><stop offset='0' stop-color='%23ffe2f0'/><stop offset='1' stop-color='%23ff80ab'/></radialGradient></defs><path d='M20 1 C33 10 33 30 20 39 C7 30 7 10 20 1 Z' fill='url(%23p)'/><path d='M20 18 C22 21 22 24 20 28 C18 24 18 21 20 18 Z' fill='%23fff' opacity='.28'/></svg>") }
+    .petal.heart{  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><path d='M20 35 C14 29 4 23 4 14 C4 8 8 5 12 5 c4 0 6 2 8 5 c2-3 4-5 8-5 c4 0 8 3 8 9 c0 9-10 15-16 21z' fill='%23e84a78'/></svg>") }
+    @keyframes fall{ to{ top:110vh } } @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
     @media (prefers-reduced-motion:reduce){ .petal{ display:none } }
 
-    /* 內容 */
-    .wrap{ position:relative; z-index:2; padding: 8vh 18px 20vh }
-    .container{ max-width:1200px; margin:0 auto }
+    /* 內容框 */
+    .wrap{ position:relative; z-index:2; padding: 8vh 18px 18vh }
+    .container{ max-width:1100px; margin:0 auto }
 
-    .hero{ margin: 2vh auto 5vh; max-width: 960px; position:relative }
-    .card{ background:var(--paper); border-radius:var(--r); box-shadow:var(--shadow); padding:32px 22px 26px; text-align:center; position:relative }
-    .couple-icon{ width:72px; height:72px; display:block; margin:-84px auto 8px; filter: drop-shadow(0 6px 12px rgba(0,0,0,.12)) }
+    .hero{ margin: 2vh auto 4vh; max-width: 960px }
+    .card{ background:var(--paper); border-radius:var(--r); box-shadow:var(--shadow); padding:32px 22px 26px; text-align:center }
     .title{ margin:4px 0 8px; font-size: clamp(28px,4vw,40px); letter-spacing:.08em }
     .msg{ white-space:pre-line; line-height:1.9; font-size: clamp(16px,2.4vw,20px); margin:0 auto; max-width:800px }
-    .heart-outline{ position:absolute; inset:-24px; width:calc(100% + 48px); height:calc(100% + 48px); pointer-events:none; z-index:-1 }
 
-    /* 相簿 */
-    .gallery{ position:relative; overflow:hidden }
-    .slides{ display:flex; transition: transform .6s ease }
-    .slide{ min-width:100%; box-sizing:border-box; padding:20px }
+    /* 相簿（白色相冊頁＋側邊文字） */
+    .album{ position:relative; margin-top:24px }
+    .slides{ position:relative; min-height: 72vh }
+    .slide{
+      position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
+      transition:opacity .5s ease, transform .5s ease;
+      display:block;
+    }
+    .slide.active{ opacity:1; transform:translateX(0) scale(1) }
+
+    .page{
+      background:#fff; border-radius:16px; box-shadow:var(--shadow);
+      padding:18px; height:100%;
+      display:grid; grid-template-columns: 1fr min(360px,34%); gap:18px; align-items:center;
+    }
+
     .frame{ position:relative; padding:14px; border-radius:14px;
             background: linear-gradient(145deg,#9b6f43 0%,#e7c796 32%,#b98a5a 55%,#8d6a3e 100%);
             box-shadow: 0 18px 28px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.2) }
     .frame::before{ content:""; position:absolute; inset:6px; border-radius:10px; background:linear-gradient(145deg,rgba(255,255,255,.35),rgba(0,0,0,.08));
                     mix-blend-mode:overlay; pointer-events:none }
     .mat{ background:#fff; padding:14px; border-radius:10px; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06) }
-    .frame img, .frame video{ display:block; width:100%; max-height:640px; object-fit:cover; border-radius:8px; box-shadow:0 10px 18px rgba(0,0,0,.18) }
-    .cap{ text-align:center; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); margin-top:6px; font-size:16px }
-    .controls{ text-align:center; margin-top:12px }
-    .controls button{ background:#fff; border:none; margin:0 6px; padding:6px 12px; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2) }
+
+    .media{ width:100%; height:62vh; max-height:640px; border-radius:8px; box-shadow:0 10px 18px rgba(0,0,0,.18); object-fit:cover; display:block }
+    .text{ align-self:center; padding:8px 4px; color:#333 }
+    .text h3{ margin:0 0 8px; font-size:20px; letter-spacing:.02em }
+    .text p{ margin:0; line-height:1.8; font-size:16px; white-space:pre-line }
+
+    /* 左右浮動箭頭 */
+    .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
+            color:#fff; cursor:pointer; z-index:3; user-select:none }
+    .arrow svg{ width:36px; height:36px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
+    .arrow-left{ left:0; background:linear-gradient(90deg, rgba(0,0,0,.18), transparent) }
+    .arrow-right{ right:0; background:linear-gradient(270deg, rgba(0,0,0,.18), transparent) }
+    .arrow:active{ transform:scale(.98) }
+
+    @media (max-width:760px){
+      .page{ grid-template-columns: 1fr; gap:12px }
+      .media{ height:56vh }
+      .arrow{ width:16% }
+      .text{ text-align:center }
+    }
   </style>
 </head>
 <body>
@@ -73,6 +84,7 @@
   <video class="bg-video" autoplay muted loop playsinline poster="照片/IMG_3454.JPG">
     <source src="照片/couple.webm" type="video/webm">
     <source src="照片/couple_h264.mp4" type="video/mp4">
+    您的瀏覽器不支援影片播放。
   </video>
   <div class="bg-overlay" aria-hidden="true"></div>
 
@@ -81,13 +93,9 @@
 
   <main class="wrap">
     <div class="container">
-      <!-- 愛心卡片 -->
+      <!-- 首屏卡片 -->
       <section class="hero">
         <div class="card">
-          <svg class="couple-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="22" cy="22" r="10" fill="#ff80ab"/><circle cx="42" cy="22" r="10" fill="#e84a78"/>
-            <path d="M10 54c0-9 8-16 18-16s18 7 18 16" fill="#ffd6e7"/>
-          </svg>
           <h1 class="title">七夕情人節</h1>
           <p class="msg">情人節快樂，麻糬寶寶
 能成為你的女朋友的我，真的好幸運
@@ -95,103 +103,119 @@
         </div>
       </section>
 
-      <!-- 相簿 -->
-      <section class="gallery" aria-label="回憶相簿">
-        <div class="slides" id="slides">
-
-          <!-- 第一張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第一張.JPG"></div></div>
-            <p class="cap">曖昧的時候都會給我看手手</p>
-          </article>
-
-          <!-- 第二張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第二張.jpg"></div></div>
-            <p class="cap">一起追太陽看日出 (好浪漫)</p>
-          </article>
-
-          <!-- 第三張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第三張.JPG"></div></div>
-            <p class="cap">一起拍拍貼機</p>
-          </article>
-
-          <!-- 第四張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第四張.jpg"></div></div>
-            <p class="cap">520 有人送了一束玫瑰花 (浪漫儀式感的男人)</p>
-          </article>
-
-          <!-- 第五張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第五張.jpg"></div></div>
-            <p class="cap">日常約會 逛 IKEA 甜蜜單純的生活</p>
-          </article>
-
-          <!-- 第六張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第六張.JPG"></div></div>
-            <p class="cap">台南遊 偷拍寶寶</p>
-          </article>
-
-          <!-- 第七張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第七張.jpg"></div></div>
-            <p class="cap">可可愛愛的床照</p>
-          </article>
-
-          <!-- 第八張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第八張.JPG"></div></div>
-            <p class="cap">到哪都要逛枕頭的寶寶</p>
-          </article>
-
-          <!-- 第九張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第十張.jpg"></div></div>
-            <p class="cap">七夕寶寶提前準備的玫瑰花啊啊啊</p>
-          </article>
-
-          <!-- 第十張 -->
-          <article class="slide">
-            <div class="frame"><div class="mat"><img src="照片/第十張.JPG"></div></div>
-            <p class="cap">還有一盒巧克力 ❤️</p>
-          </article>
-
-          <!-- 影片 -->
-          <article class="slide">
-            <div class="frame"><div class="mat">
-              <video autoplay muted loop playsinline controls>
-                <source src="照片/couple2.webm" type="video/webm">
-                <source src="照片/couple2_h264.mp4" type="video/mp4">
-              </video>
-            </div></div>
-            <p class="cap">寶寶耍可愛日常</p>
-          </article>
-
+      <!-- 相簿（白色相冊頁，每頁：左圖右文） -->
+      <section class="album" aria-label="回憶相簿，可左右翻頁">
+        <!-- 浮動箭頭 -->
+        <div class="arrow arrow-left" id="prev" aria-label="上一張" title="上一張">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
         </div>
-        <div class="controls">
-          <button onclick="moveSlide(-1)">上一張</button>
-          <button onclick="moveSlide(1)">下一張</button>
+        <div class="arrow arrow-right" id="next" aria-label="下一張" title="下一張">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m8.59 16.59 1.41 1.41 6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+        </div>
+
+        <div class="slides" id="slides">
+          <!-- 1 -->
+          <article class="slide active">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
+              <div class="text"><h3>曖昧的時候都會給我看手手</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 2 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
+              <div class="text"><h3>一起追太陽看日出</h3><p>（好浪漫</p></div>
+            </div>
+          </article>
+
+          <!-- 3 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第三張.JPG" alt="拍貼機"></div></div>
+              <div class="text"><h3>一起拍拍貼機</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 4 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第四張.jpg" alt="520玫瑰花"></div></div>
+              <div class="text"><h3>520 有人送了一束玫瑰花</h3><p>（浪漫儀式感的男人</p></div>
+            </div>
+          </article>
+
+          <!-- 5 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第五張.jpg" alt="IKEA 約會"></div></div>
+              <div class="text"><h3>日常約會 逛 IKEA</h3><p>甜蜜單純的生活</p></div>
+            </div>
+          </article>
+
+          <!-- 6 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第六張.JPG" alt="台南遊 偷拍"></div></div>
+              <div class="text"><h3>台南遊 偷拍寶寶</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 7 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第七張.jpg" alt="可愛床照"></div></div>
+              <div class="text"><h3>可可愛愛的床照</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 8 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第八張.JPG" alt="逛枕頭"></div></div>
+              <div class="text"><h3>到哪都要逛枕頭的寶寶</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 9 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
+              <div class="text"><h3>七夕寶寶提前準備的玫瑰花啊啊啊</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 10 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><img class="media" src="照片/第十張.jpg" alt="巧克力"></div></div>
+              <div class="text"><h3>還有一盒巧克力</h3><p>❤️</p></div>
+            </div>
+          </article>
+
+          <!-- 11：影片 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat">
+                <video class="media" autoplay muted loop playsinline controls>
+                  <source src="照片/couple2.webm" type="video/webm">
+                  <source src="照片/couple2_h264.mp4" type="video/mp4">
+                  您的瀏覽器不支援影片播放。
+                </video>
+              </div></div>
+              <div class="text"><h3>寶寶耍可愛日常</h3><p></p></div>
+            </div>
+          </article>
         </div>
       </section>
 
-      <p class="note">Made with ❤️ for 七夕</p>
+      <p class="cap" style="text-align:center;color:#fff;opacity:.85;margin-top:18px">左右鍵、滑動都可以翻頁</p>
     </div>
   </main>
 
   <script>
-    // 相簿控制
-    let current = 0;
-    const slides = document.getElementById('slides');
-    const total = slides.children.length;
-    function moveSlide(dir){
-      current = (current + dir + total) % total;
-      slides.style.transform = 'translateX(-'+(current*100)+'%)';
-    }
-
-    // 花瓣灑落
+    // 花瓣
     const layer = document.querySelector('.petals');
     function drop(type, count){
       for(let i=0;i<count;i++){
@@ -209,6 +233,28 @@
       }
     }
     drop('sakura', 46); drop('heart', 26);
+
+    // 相簿：箭頭 / 鍵盤 / 觸控
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let i = 0;
+    function go(n){
+      slides[i].classList.remove('active');
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add('active');
+    }
+    document.getElementById('prev').onclick = () => go(i-1);
+    document.getElementById('next').onclick = () => go(i+1);
+    document.addEventListener('keydown', e => {
+      if(e.key==='ArrowLeft') go(i-1);
+      if(e.key==='ArrowRight') go(i+1);
+    });
+    // 觸控滑動
+    let sx=0, dx=0; const area = document.getElementById('slides');
+    area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
+    area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
+    area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
   </script>
 </body>
 </html>
+
+
