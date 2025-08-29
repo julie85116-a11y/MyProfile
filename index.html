@@ -19,9 +19,9 @@
       --shadow: 0 14px 36px rgba(0,0,0,.18);
       --r:18px;
 
-      /* 字體與統一字級（先 MaShanZheng，缺字 fallback 到 cwTeXKai，再到 Noto Serif/ Sans TC） */
+      /* 字體與統一字級（先 MaShanZheng，缺字才改用 cwTeXKai） */
       --hand: "Ma Shan Zheng","cwTeXKai","Noto Serif TC","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      --fz-body: clamp(18px, 2.6vw, 20px);   /* 內文（信紙＋相簿右側）統一字級 */
+      --fz-body: clamp(18px, 2.6vw, 20px);
 
       /* 相冊配色 */
       --album-bg: #3b2f2a; --album-ink: #f7f2ea;
@@ -38,10 +38,8 @@
       margin:0; color:#2b2b2b; overflow-x:hidden;
       font-family:var(--hand);
       -webkit-font-smoothing:antialiased;
-      font-smooth:always;
-      font-synthesis: none;           /* 不讓瀏覽器合成粗斜體避免字重突變 */
-      letter-spacing:0;               /* 中文避免額外字距 */
-      background:#000;                /* 視訊未載入前的底色 */
+      font-synthesis:none;               /* 避免瀏覽器「合成粗斜體」造成畫風不一 */
+      background:#000;
     }
 
     /* 背景影片（行動裝置移除模糊以加速） */
@@ -63,31 +61,40 @@
     @keyframes sway{ 0%{ transform:translateX(-18px) rotate(0) } 100%{ transform:translateX(18px) rotate(360deg) } }
     @media (prefers-reduced-motion:reduce){ .petal{ display:none } }
 
-    /* 外層排版 */
     .wrap{ position:relative; z-index:2; padding: 8vh 18px 18vh }
     .container{ max-width:1100px; margin:0 auto }
 
-    /* ---------- 首屏卡片：信封樣式（紙張在最上層） ---------- */
+    /* ---------- 首屏卡片（信紙在最上層） ---------- */
     .hero{ margin: 2vh auto 4vh; max-width: 960px }
     .envelope{
       position:relative; margin: 8px auto 14px; width: min(860px, 95vw);
       aspect-ratio: 4/3;
     }
-    /* 信紙（z-index 3，最上層） */
     .envelope .paper{
       position:absolute; top:-6%; left:11%; width:78%; height:66%;
       background: var(--env-paper); border:6px solid var(--env-stroke);
       box-shadow: 0 16px 22px rgba(0,0,0,.25);
       transform: rotate(-7deg) translate3d(0,0,0); z-index:3;
       padding: clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px);
-      overflow: auto; border-radius: 6px;
-      -webkit-overflow-scrolling: touch;  /* 行動裝置順滑滾動 */
+      overflow:auto; border-radius:6px; -webkit-overflow-scrolling:touch;
     }
-    .envelope .paper h1{ margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400 }
-    .envelope .paper p{ margin:0; white-space:pre-line; line-height:1.9; font-size: var(--fz-body) }
+    .envelope .paper h1{
+      margin:0 0 8px; font-size: clamp(26px,4.4vw,40px); font-weight:400;
+      letter-spacing:.02em; font-kerning:none; font-feature-settings:"kern" 0;
+    }
+    .envelope .paper p{
+      margin:0;
+      white-space:pre-line;
+      /* 這三行是避免擠在一起的關鍵 */
+      letter-spacing:.02em;             /* 稍微拉開字距 */
+      font-kerning:none; font-feature-settings:"kern" 0;
+      line-height:1.95;                 /* 行高略增，但不會鬆散 */
+      font-size:var(--fz-body);
+    }
 
-    /* 內嵌 SVG emoji：避免字型回退造成「怪字」 */
-    .emo{ display:inline-block; width:1.05em; height:1.05em; vertical-align:-0.15em; background-size:contain; background-repeat:no-repeat }
+    /* 內嵌 SVG emoji：左右留一點空隙避免擠字 */
+    .emo{ display:inline-block; width:1.05em; height:1.05em; vertical-align:-0.15em;
+          background-size:contain; background-repeat:no-repeat; margin:0 .06em; }
     .emo-heart{
       background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23ff5d7d' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5C2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.13 2.44C11.09 5.01 12.76 4 14.5 4C17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>");
     }
@@ -98,7 +105,7 @@
       background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ff79a8'/><stop offset='1' stop-color='%23ff4d88'/></linearGradient></defs><path fill='url(%23g)' d='M12 21.3l-1.4-1.3C5.4 15.4 2 12.3 2 8.5 2 6 4 4 6.5 4c1.9 0 3.2 1 4 2.2C11.3 5 12.6 4 14.5 4 17 4 19 6 19 8.5c0 3.8-3.4 6.9-8.6 11.5z'/><path fill='%23ffd35f' d='M17.5 6l.9 2.1L20.5 9l-2.1.9L17.5 12l-.9-2.1L14.5 9l2.1-.9z'/></svg>");
     }
 
-    /* 「可滑動」提示（SVG 圖示） */
+    /* 「可滑動」提示 */
     .paper .hint{
       position:absolute; right:12px; bottom:10px; font-size:.9em; opacity:.7; user-select:none; display:flex; align-items:center; gap:.3em;
     }
@@ -106,7 +113,7 @@
       url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3l-3 3m3-3l3 3M12 21l-3-3m3 3l3-3M12 6v12'/></svg>")
       no-repeat center / contain; }
 
-    /* 信封本體（z-index 1，紙張後面；不攔滑鼠事件） */
+    /* 信封（裝飾在後面） */
     .env-body{
       position:absolute; left:6%; right:6%; bottom:4%; height:58%;
       background: var(--env-pink); border:6px solid var(--env-stroke);
@@ -114,9 +121,6 @@
       box-shadow: 0 12px 24px rgba(0,0,0,.25);
       z-index:1; pointer-events:none;
     }
-    /* 不產生黑色叉叉 */
-
-    /* 上蓋三角形（也放後面） */
     .env-flap{
       position:absolute; left:6%; right:6%; bottom: calc(4% + 58% - 6px); height:36%;
       overflow:visible; z-index:1; pointer-events:none;
@@ -130,7 +134,6 @@
       border-right:6px solid var(--env-stroke);
       border-left:6px solid var(--env-stroke);
     }
-    /* 愛心（後景） */
     .heart{
       position:absolute; background:var(--env-heart);
       width: clamp(40px, 7vw, 64px); height: clamp(40px, 7vw, 64px);
@@ -148,7 +151,7 @@
     .h-mid{ left: 16%; bottom: calc(4% + 58% - 12px); transform: rotate(45deg) scale(.8) }
     .h-small{ left: 10%; bottom: calc(4% + 58% + 26px); transform: rotate(45deg) scale(.6) }
 
-    /* ---------- 相簿（咖啡色相冊） ---------- */
+    /* ---------- 相簿 ---------- */
     .album{
       position:relative; margin-top:24px; padding:28px; border-radius:20px;
       background:
@@ -178,13 +181,15 @@
     .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
     .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
 
-    .media{
-      width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
-      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block
-    }
+    .media{ width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
+            box-shadow:0 10px 18px rgba(0,0,0,.18); display:block }
     video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
     .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
-    .text h3{ margin:0; font-size: var(--fz-body); font-weight:400 }
+    .text h3{
+      margin:0; font-size:var(--fz-body); font-weight:400;
+      letter-spacing:.02em; font-kerning:none; font-feature-settings:"kern" 0;
+      line-height:1.95;
+    }
 
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
             color:#fff; cursor:pointer; z-index:3; user-select:none; }
@@ -202,7 +207,7 @@
       .envelope .paper{ transform: rotate(-4deg) translate3d(0,0,0) }
     }
 
-    /* 保險：強制全站使用同一套字體與字重 */
+    /* 保險：全站同字體與字重 */
     html, body { font-family: var(--hand) !important; }
     *, *::before, *::after {
       font-family: inherit !important;
@@ -232,7 +237,6 @@
       <!-- 首屏卡片：信封在後、信紙在前 -->
       <section class="hero" aria-label="情人節信封卡片">
         <div class="envelope">
-          <!-- 信紙（前景、可滾動/選取） -->
           <div class="paper">
             <h1>七夕情人節</h1>
             <p>情人節快樂，麻糬寶寶
@@ -255,7 +259,7 @@
         </div>
       </section>
 
-      <!-- 相簿（咖啡色相冊；左圖右手寫） -->
+      <!-- 相簿 -->
       <section class="album" aria-label="回憶相簿，可左右翻頁">
         <div class="arrow arrow-left" id="prev" aria-label="上一張" title="上一張">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -265,7 +269,6 @@
         </div>
 
         <div class="slides" id="slides">
-          <!-- 1 -->
           <article class="slide active">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
@@ -273,7 +276,6 @@
             </div>
           </article>
 
-          <!-- 2 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
@@ -281,7 +283,6 @@
             </div>
           </article>
 
-          <!-- 3 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第三張.JPG" alt="拍拍貼機"></div></div>
@@ -289,7 +290,6 @@
             </div>
           </article>
 
-          <!-- 4 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第四張.jpg" alt="520 玫瑰花"></div></div>
@@ -297,7 +297,6 @@
             </div>
           </article>
 
-          <!-- 5 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第五張.jpg" alt="日常逛 IKEA"></div></div>
@@ -305,7 +304,6 @@
             </div>
           </article>
 
-          <!-- 6 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第六張.JPG" alt="台南遊 偷拍寶寶"></div></div>
@@ -313,7 +311,6 @@
             </div>
           </article>
 
-          <!-- 7 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第七張.jpg" alt="可可愛愛的床照"></div></div>
@@ -321,7 +318,6 @@
             </div>
           </article>
 
-          <!-- 8 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第八張.JPG" alt="到哪都要逛枕頭"></div></div>
@@ -329,7 +325,6 @@
             </div>
           </article>
 
-          <!-- 9：影片 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span>
@@ -343,7 +338,6 @@
             </div>
           </article>
 
-          <!-- 10～12：近期三張 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/IMG_3412.JPG" alt="近期：女友視角"></div></div>
@@ -365,7 +359,6 @@
             </div>
           </article>
 
-          <!-- 13～14：七夕花 & 巧克力 -->
           <article class="slide">
             <div class="page">
               <div class="frame"><div class="mat"><span class="tape"></span><img loading="lazy" class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
@@ -387,7 +380,6 @@
   </main>
 
   <script>
-    // 花瓣數量：桌機多、手機少（效能優化）
     const isMobile = matchMedia('(max-width: 760px)').matches;
     const sak = isMobile ? 22 : 46;
     const hearts = isMobile ? 12 : 26;
@@ -425,13 +417,13 @@
       if(e.key==='ArrowRight') go(i+1);
     }, {passive:true});
 
-    // 觸控滑動（passive 以提升效能）
+    // 觸控滑動
     let sx=0, dx=0; const area = document.getElementById('slides');
     area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; }, {passive:true});
 
-    // 圖片大小寫容錯（JPG/jpg）
+    // 圖片大小寫容錯
     document.querySelectorAll('img.media').forEach(img => {
       const orig = img.getAttribute('src');
       const m = orig.match(/\.(jpg|jpeg)$/i);
@@ -446,6 +438,7 @@
   </script>
 </body>
 </html>
+
 
 
 
