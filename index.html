@@ -4,10 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>七夕情人節｜麻糬寶寶我愛你</title>
+
+  <!-- 手寫字體（中文備援） -->
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+
   <style>
-    :root{ --paper: rgba(255,255,255,.88); --shadow: 0 14px 36px rgba(0,0,0,.18); --r:18px }
-    *{ box-sizing:border-box } html,body{ height:100% }
-    body{ margin:0; color:#2b2b2b; overflow-x:hidden; font-family:"Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif }
+    :root{
+      --paper: rgba(255,255,255,.88);
+      --shadow: 0 14px 36px rgba(0,0,0,.18);
+      --r:18px;
+      --hand: "Patrick Hand","Ma Shan Zheng","ZCOOL KuaiLe","Noto Sans TC",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --album-bg: #3b2f2a;           /* 咖啡色相冊底 */
+      --album-ink: #f7f2ea;          /* 手寫白墨 */
+      --tape-a: #e8d49b;             /* 紙膠帶顏色 */
+      --tape-b: #d7bf87;
+    }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0; color:#2b2b2b; overflow-x:hidden;
+      font-family:var(--hand); letter-spacing:.3px;
+    }
 
     /* 背景影片 */
     .bg-video{ position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:-1; filter:brightness(.55) saturate(1.05) blur(1px) }
@@ -34,47 +51,81 @@
     .title{ margin:4px 0 8px; font-size: clamp(28px,4vw,40px); letter-spacing:.08em }
     .msg{ white-space:pre-line; line-height:1.9; font-size: clamp(16px,2.4vw,20px); margin:0 auto; max-width:800px }
 
-    /* 相簿（白色相冊頁＋側邊文字） */
-    .album{ position:relative; margin-top:24px }
+    /* 相簿：咖啡色相冊背景 + 手寫白墨 */
+    .album{
+      position:relative; margin-top:24px; padding:28px; border-radius:20px;
+      background:
+        radial-gradient(1200px 800px at -10% -20%, rgba(255,255,255,.06) 0%, transparent 60%),
+        radial-gradient(900px 600px at 110% 120%, rgba(255,255,255,.06) 0%, transparent 60%),
+        linear-gradient(180deg, #46362c 0%, #332821 100%);
+      background-color: var(--album-bg);
+      box-shadow: 0 20px 40px rgba(0,0,0,.35) inset, 0 12px 36px rgba(0,0,0,.2);
+    }
     .slides{ position:relative; min-height: 72vh }
     .slide{
       position:absolute; inset:0; opacity:0; transform:translateX(30px) scale(.98);
-      transition:opacity .5s ease, transform .5s ease;
-      display:block;
+      transition:opacity .5s ease, transform .5s ease; display:block;
     }
     .slide.active{ opacity:1; transform:translateX(0) scale(1) }
 
+    /* 讓頁面看起來像貼在相冊上：去掉白底，保留排版 */
     .page{
-      background:#fff; border-radius:16px; box-shadow:var(--shadow);
-      padding:18px; height:100%;
-      display:grid; grid-template-columns: 1fr min(360px,34%); gap:18px; align-items:center;
+      background:transparent; box-shadow:none;
+      height:100%; display:grid; grid-template-columns: 1fr min(360px,34%); gap:28px; align-items:center;
     }
 
-    .frame{ position:relative; padding:14px; border-radius:14px;
-            background: linear-gradient(145deg,#9b6f43 0%,#e7c796 32%,#b98a5a 55%,#8d6a3e 100%);
-            box-shadow: 0 18px 28px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.2) }
-    .frame::before{ content:""; position:absolute; inset:6px; border-radius:10px; background:linear-gradient(145deg,rgba(255,255,255,.35),rgba(0,0,0,.08));
-                    mix-blend-mode:overlay; pointer-events:none }
-    .mat{ background:#fff; padding:14px; border-radius:10px; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06) }
+    /* Polaroid 卡&紙膠帶 */
+    .mat{
+      position:relative; background:#fff; padding:14px 14px 42px; border-radius:8px;
+      box-shadow: 0 18px 36px rgba(0,0,0,.35);
+      transform: rotate(-1.2deg);
+    }
+    .slide:nth-child(even) .mat{ transform: rotate(.9deg) }
 
-    .media{ width:100%; height:62vh; max-height:640px; border-radius:8px; box-shadow:0 10px 18px rgba(0,0,0,.18); object-fit:cover; display:block }
-    .text{ align-self:center; padding:8px 4px; color:#333 }
-    .text h3{ margin:0 0 8px; font-size:20px; letter-spacing:.02em }
-    .text p{ margin:0; line-height:1.8; font-size:16px; white-space:pre-line }
+    .mat::after{
+      /* 底部手寫標題：由 JS 把 <img alt> 複製到 data-cap */
+      content: attr(data-cap);
+      position:absolute; left:14px; right:14px; bottom:10px;
+      color:#333; opacity:.8; font-size:14px; letter-spacing:.5px; text-align:left;
+    }
+    /* 兩條紙膠帶 */
+    .mat::before, .mat span.tape{
+      content:""; position:absolute; width:110px; height:28px; background:
+        linear-gradient(180deg,var(--tape-a),var(--tape-b));
+      opacity:.9; mix-blend-mode:multiply; box-shadow:0 4px 10px rgba(0,0,0,.18);
+      clip-path: polygon(3% 0, 97% 0, 100% 20%, 97% 100%, 3% 100%, 0 80%);
+      pointer-events:none;
+    }
+    .mat::before{ left:-10px; top:-12px; transform: rotate(-12deg) }
+    .mat span.tape{ right:-8px; bottom:-10px; transform: rotate(10deg) }
 
-    /* 左右浮動箭頭 */
+    /* 內容（右側手寫白字） */
+    .text{ align-self:center; padding:8px 4px; color:var(--album-ink) }
+    .text h3{ margin:0 0 8px; font-size:22px; letter-spacing:.5px }
+    .text p{ margin:0; line-height:1.9; font-size:16px; white-space:pre-line }
+
+    /* 圖片/影片比例 */
+    .media{
+      width:100%; max-height:58vh; aspect-ratio:3/4; object-fit:cover; border-radius:6px;
+      box-shadow:0 10px 18px rgba(0,0,0,.18); display:block;
+    }
+    video.media{ aspect-ratio:auto; max-height:58vh; border-radius:6px }
+
+    /* 左右箭頭：相冊邊緣的白色手繪箭頭感 */
     .arrow{ position:absolute; top:0; bottom:0; width:13%; display:flex; align-items:center; justify-content:center;
-            color:#fff; cursor:pointer; z-index:3; user-select:none }
-    .arrow svg{ width:36px; height:36px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
-    .arrow-left{ left:0; background:linear-gradient(90deg, rgba(0,0,0,.18), transparent) }
-    .arrow-right{ right:0; background:linear-gradient(270deg, rgba(0,0,0,.18), transparent) }
+            color:#fff; cursor:pointer; z-index:3; user-select:none; }
+    .arrow svg{ width:40px; height:40px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)) }
+    .arrow-left{ left:-6px; background:linear-gradient(90deg, rgba(0,0,0,.18), transparent) }
+    .arrow-right{ right:-6px; background:linear-gradient(270deg, rgba(0,0,0,.18), transparent) }
     .arrow:active{ transform:scale(.98) }
 
     @media (max-width:760px){
-      .page{ grid-template-columns: 1fr; gap:12px }
-      .media{ height:56vh }
+      .album{ padding:18px }
+      .page{ grid-template-columns: 1fr; gap:16px }
+      .media{ max-height:56vh }
       .arrow{ width:16% }
       .text{ text-align:center }
+      .mat::after{ text-align:center }
     }
   </style>
 </head>
@@ -99,13 +150,12 @@
           <h1 class="title">七夕情人節</h1>
           <p class="msg">情人節快樂，麻糬寶寶
 能成為你的女朋友的我，真的好幸運
-無論歡笑或難關，我都想跟你走到很遠、一直陪著你</p>
+之後的路，不管發生什麼事，都要一起陪著彼此走到很遠很遠喔～</p>
         </div>
       </section>
 
-      <!-- 相簿（白色相冊頁，每頁：左圖右文） -->
+      <!-- 相簿（咖啡色相冊頁；左圖右手寫） -->
       <section class="album" aria-label="回憶相簿，可左右翻頁">
-        <!-- 浮動箭頭 -->
         <div class="arrow arrow-left" id="prev" aria-label="上一張" title="上一張">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
         </div>
@@ -117,7 +167,7 @@
           <!-- 1 -->
           <article class="slide active">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第一張.JPG" alt="曖昧時期手手"></div></div>
               <div class="text"><h3>曖昧的時候都會給我看手手</h3><p></p></div>
             </div>
           </article>
@@ -125,7 +175,7 @@
           <!-- 2 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第二張.jpg" alt="一起追太陽看日出"></div></div>
               <div class="text"><h3>一起追太陽看日出</h3><p>（好浪漫</p></div>
             </div>
           </article>
@@ -133,7 +183,7 @@
           <!-- 3 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第三張.JPG" alt="拍貼機"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第三張.JPG" alt="拍拍貼機"></div></div>
               <div class="text"><h3>一起拍拍貼機</h3><p></p></div>
             </div>
           </article>
@@ -141,7 +191,7 @@
           <!-- 4 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第四張.jpg" alt="520玫瑰花"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第四張.jpg" alt="520 玫瑰花"></div></div>
               <div class="text"><h3>520 有人送了一束玫瑰花</h3><p>（浪漫儀式感的男人</p></div>
             </div>
           </article>
@@ -149,7 +199,7 @@
           <!-- 5 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第五張.jpg" alt="IKEA 約會"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第五張.jpg" alt="日常逛 IKEA"></div></div>
               <div class="text"><h3>日常約會 逛 IKEA</h3><p>甜蜜單純的生活</p></div>
             </div>
           </article>
@@ -157,7 +207,7 @@
           <!-- 6 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第六張.JPG" alt="台南遊 偷拍"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第六張.JPG" alt="台南遊 偷拍寶寶"></div></div>
               <div class="text"><h3>台南遊 偷拍寶寶</h3><p></p></div>
             </div>
           </article>
@@ -165,7 +215,7 @@
           <!-- 7 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第七張.jpg" alt="可愛床照"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第七張.jpg" alt="可可愛愛的床照"></div></div>
               <div class="text"><h3>可可愛愛的床照</h3><p></p></div>
             </div>
           </article>
@@ -173,31 +223,15 @@
           <!-- 8 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第八張.JPG" alt="逛枕頭"></div></div>
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第八張.JPG" alt="到哪都要逛枕頭"></div></div>
               <div class="text"><h3>到哪都要逛枕頭的寶寶</h3><p></p></div>
             </div>
           </article>
 
-          <!-- 9 -->
+          <!-- 9：影片 -->
           <article class="slide">
             <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
-              <div class="text"><h3>七夕寶寶提前準備的玫瑰花啊啊啊</h3><p></p></div>
-            </div>
-          </article>
-
-          <!-- 10 -->
-          <article class="slide">
-            <div class="page">
-              <div class="frame"><div class="mat"><img class="media" src="照片/第十張.jpg" alt="巧克力"></div></div>
-              <div class="text"><h3>還有一盒巧克力</h3><p>❤️</p></div>
-            </div>
-          </article>
-
-          <!-- 11：影片 -->
-          <article class="slide">
-            <div class="page">
-              <div class="frame"><div class="mat">
+              <div class="frame"><div class="mat"><span class="tape"></span>
                 <video class="media" autoplay muted loop playsinline controls>
                   <source src="照片/couple2.webm" type="video/webm">
                   <source src="照片/couple2_h264.mp4" type="video/mp4">
@@ -207,10 +241,47 @@
               <div class="text"><h3>寶寶耍可愛日常</h3><p></p></div>
             </div>
           </article>
+
+          <!-- 10～12：近期三張 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3412.JPG" alt="近期：女友視角"></div></div>
+              <div class="text"><h3>近期照片：女友視角</h3><p></p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3419.JPG" alt="近期：男友視角"></div></div>
+              <div class="text"><h3>近期照片：男友視角</h3><p></p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/IMG_3454.JPG" alt="又是不錯看的合照"></div></div>
+              <div class="text"><h3>又是不錯看的一張對鏡拍</h3><p></p></div>
+            </div>
+          </article>
+
+          <!-- 13～14：七夕花 & 巧克力 -->
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第九張-JPG.jpg" alt="七夕玫瑰"></div></div>
+              <div class="text"><h3>七夕寶寶提前準備的玫瑰花啊啊啊</h3><p></p></div>
+            </div>
+          </article>
+
+          <article class="slide">
+            <div class="page">
+              <div class="frame"><div class="mat"><span class="tape"></span><img class="media" src="照片/第十張.jpg" alt="巧克力"></div></div>
+              <div class="text"><h3>還有一盒巧克力</h3><p>❤️</p></div>
+            </div>
+          </article>
         </div>
       </section>
 
-      <p class="cap" style="text-align:center;color:#fff;opacity:.85;margin-top:18px">左右鍵、滑動都可以翻頁</p>
+      <p class="cap" style="text-align:center;color:#fff;opacity:.9;margin-top:18px">左右鍵、滑動都可以翻頁</p>
     </div>
   </main>
 
@@ -253,25 +324,25 @@
     area.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
     area.addEventListener('touchmove',  e => dx = e.touches[0].clientX - sx, {passive:true});
     area.addEventListener('touchend',   () => { if(Math.abs(dx)>40){ dx>0?go(i-1):go(i+1) } dx=0; });
-  </script>
-  <script>
-  /* 你原本的花瓣 & 相簿翻頁程式 … */
 
-  // ---- jpg/JPG 大小寫容錯 ----
-  document.querySelectorAll('img.media').forEach(img => {
-    const orig = img.getAttribute('src');
-    const m = orig.match(/\.(jpg|jpeg)$/i);
-    if (!m) return;
-    const alt = orig.replace(/\.(jpg|jpeg)$/i,
-      ext => (ext === ext.toLowerCase() ? ext.toUpperCase() : ext.toLowerCase()));
-    let tried = false;
-    img.addEventListener('error', function onErr() {
-      if (tried) { img.removeEventListener('error', onErr); return; }
-      tried = true;
-      img.src = alt;
-    }, { once: true });
-  });
-</script>
+    // 把 <img alt> 放到父層 .mat 的 data-cap，供 Polaroid 底部手寫標題使用
+    document.querySelectorAll('.mat > img.media').forEach(img=>{
+      img.parentElement.setAttribute('data-cap', img.alt || '');
+    });
+
+    // jpg/JPG 大小寫容錯（圖片 404 時自動換大小寫重試一次）
+    document.querySelectorAll('img.media').forEach(img => {
+      const orig = img.getAttribute('src');
+      const m = orig.match(/\.(jpg|jpeg)$/i);
+      if (!m) return;
+      const alt = orig.replace(/\.(jpg|jpeg)$/i, ext => (ext === ext.toLowerCase() ? ext.toUpperCase() : ext.toLowerCase()));
+      let tried = false;
+      img.addEventListener('error', function onErr() {
+        if (tried) { img.removeEventListener('error', onErr); return; }
+        tried = true; img.src = alt;
+      }, { once: true });
+    });
+  </script>
 </body>
 </html>
 
